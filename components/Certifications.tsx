@@ -52,7 +52,7 @@ const Certifications: React.FC<CertificationsProps> = ({ data }) => {
           <p className="mt-4 text-lg text-slate-600 dark:text-slate-400">My commitment to continuous learning and professional development.</p>
         </div>
         
-        <div className="relative h-[500px] sm:h-[600px] max-w-xl mx-auto flex items-center justify-center">          
+        <div className="relative h-[400px] sm:h-[500px] max-w-xl mx-auto flex items-center justify-center">          
           {data.map((cert, index) => {
             const stackIndex = (index - currentIndex + data.length) % data.length;
             const isVisible = stackIndex < 4; // Only show top 4 cards for performance
@@ -109,7 +109,7 @@ const Certifications: React.FC<CertificationsProps> = ({ data }) => {
           })}
         </div>
 
-        <div className="flex justify-center mt-8">
+        <div className="flex justify-center mt-20">
             <button
                 onClick={handleNextClick}
                 className="w-14 h-14 bg-white dark:bg-slate-700 rounded-full shadow-md hover:shadow-lg flex items-center justify-center text-blue-600 dark:text-blue-400 hover:scale-110 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:ring-offset-2 dark:focus:ring-offset-slate-900"
