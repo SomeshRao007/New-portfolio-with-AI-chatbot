@@ -8,6 +8,7 @@ import { ThemeProvider } from './hooks/useTheme';
 import { WebGLShader } from "./components/ui/web-gl-shader";
 import { LiquidButton } from './components/ui/liquid-glass-button';
 import { SpeedInsights } from "@vercel/speed-insights/react"
+import { Analytics } from "@vercel/analytics/react"
 
 // Lazy-loaded below-fold components for better initial load performance
 const Skills = lazy(() => import('./components/Skills'));
@@ -114,6 +115,7 @@ const App: React.FC = () => {
         </Suspense>
       </div>
       <SpeedInsights/>
+      <Analytics/>
     </ThemeProvider>
   );
 };
