@@ -1,28 +1,36 @@
 
-import React, { useMemo, useState } from 'react';
+import React, { Suspense, lazy, useMemo, useState } from 'react';
 import Header from './components/Header';
 import Hero from './components/Hero';
-import Skills from './components/Skills';
-import Certifications from './components/Certifications';
 import Footer from './components/Footer';
-import Chatbot from './components/Chatbot';
-import Stats from './components/Stats';
-import Timeline from './components/Timeline';
-import Projects from './components/Projects';
-import LearningList from './components/LearningList';
-import Contact from './components/Contact';
-import Testimonials from './components/Testimonials';
 import { INITIAL_DATA, createChatbotSystemInstruction } from './constants';
 import { ThemeProvider } from './hooks/useTheme';
 import { WebGLShader } from "./components/ui/web-gl-shader";
 import { LiquidButton } from './components/ui/liquid-glass-button';
 import { SpeedInsights } from "@vercel/speed-insights/react"
+import { Analytics } from "@vercel/analytics/react"
 
+// Lazy-loaded below-fold components for better initial load performance
+const Skills = lazy(() => import('./components/Skills'));
+const Certifications = lazy(() => import('./components/Certifications'));
+const Chatbot = lazy(() => import('./components/Chatbot'));
+const Stats = lazy(() => import('./components/Stats'));
+const Timeline = lazy(() => import('./components/Timeline'));
+const Projects = lazy(() => import('./components/Projects'));
+const LearningList = lazy(() => import('./components/LearningList'));
+const Contact = lazy(() => import('./components/Contact'));
+const Testimonials = lazy(() => import('./components/Testimonials'));
+
+const SectionFallback = () => (
+  <div className="flex items-center justify-center py-20">
+    <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin" />
+  </div>
+);
 
 const IntroScreen: React.FC<{ onEnter: () => void }> = ({ onEnter }) => {
   return (
     <div className="relative flex w-full h-screen flex-col items-center justify-center overflow-hidden bg-black">
-      <WebGLShader/> 
+      <WebGLShader/>
       <div className="relative z-10 p-2 w-full mx-auto max-w-3xl">
         <main className="relative border border-white/20 bg-transparent backdrop-blur-md py-10 overflow-hidden rounded-xl shadow-2xl">
             <h1 className="mb-3 text-white text-center text-7xl font-extrabold tracking-tighter md:text-[clamp(2rem,8vw,7rem)]">Somesh Rao Coka</h1>
@@ -34,12 +42,11 @@ const IntroScreen: React.FC<{ onEnter: () => void }> = ({ onEnter }) => {
                 </span>
                 <p className="text-xs text-green-500">Available for New Projects</p>
             </div>
-            
-            <div className="flex justify-center pb-6"> 
-                <LiquidButton className="text-white border border-white/30 rounded-full font-bold tracking-wide" size={'xl'} onClick={onEnter}>Let's Go</LiquidButton> 
-            </div> 
+
+            <div className="flex justify-center pb-6">
+                <LiquidButton className="text-white border border-white/30 rounded-full font-bold tracking-wide" size={'xl'} onClick={onEnter}>Let's Go</LiquidButton>
+            </div>
         </main>
-        <SpeedInsights/>
       </div>
     </div>
   );
@@ -63,33 +70,52 @@ const App: React.FC = () => {
           <div id="home" className="pt-20 -mt-20">
             <Hero data={portfolioData.personalInfo} />
           </div>
-          <Stats data={portfolioData.stats} />
-          <div id="skills" className="pt-20 -mt-20">
-            <Skills data={portfolioData.skills} />
-          </div>
-          <div id="timeline" className="pt-20 -mt-20">
-            <Timeline data={portfolioData.timeline} />
-          </div>
-          <div id="projects" className="pt-20 -mt-20">
-            <Projects data={portfolioData.projects} />
-          </div>
-          <div id="certifications" className="pt-20 -mt-20">
-            <Certifications data={portfolioData.certifications} />
-          </div>
-          <div id="testimonials" className="pt-20 -mt-20">
-            <Testimonials data={portfolioData.testimonials} />
-          </div>
-          <div id="learning" className="pt-20 -mt-20">
-            <LearningList data={portfolioData.learning} />
-          </div>
-          <div id="contact" className="pt-20 -mt-20">
-            <Contact formspreeEndpoint={portfolioData.personalInfo.formspreeEndpoint} />
-          </div>
+          <Suspense fallback={<SectionFallback />}>
+            <Stats data={portfolioData.stats} />
+          </Suspense>
+          <Suspense fallback={<SectionFallback />}>
+            <div id="skills" className="pt-20 -mt-20">
+              <Skills data={portfolioData.skills} />
+            </div>
+          </Suspense>
+          <Suspense fallback={<SectionFallback />}>
+            <div id="timeline" className="pt-20 -mt-20">
+              <Timeline data={portfolioData.timeline} />
+            </div>
+          </Suspense>
+          <Suspense fallback={<SectionFallback />}>
+            <div id="projects" className="pt-20 -mt-20">
+              <Projects data={portfolioData.projects} />
+            </div>
+          </Suspense>
+          <Suspense fallback={<SectionFallback />}>
+            <div id="certifications" className="pt-20 -mt-20">
+              <Certifications data={portfolioData.certifications} />
+            </div>
+          </Suspense>
+          <Suspense fallback={<SectionFallback />}>
+            <div id="testimonials" className="pt-20 -mt-20">
+              <Testimonials data={portfolioData.testimonials} />
+            </div>
+          </Suspense>
+          <Suspense fallback={<SectionFallback />}>
+            <div id="learning" className="pt-20 -mt-20">
+              <LearningList data={portfolioData.learning} />
+            </div>
+          </Suspense>
+          <Suspense fallback={<SectionFallback />}>
+            <div id="contact" className="pt-20 -mt-20">
+              <Contact formspreeEndpoint={portfolioData.personalInfo.formspreeEndpoint} />
+            </div>
+          </Suspense>
         </main>
         <Footer name={portfolioData.personalInfo.name} />
-        <Chatbot systemInstruction={chatbotInstruction} />
+        <Suspense fallback={null}>
+          <Chatbot systemInstruction={chatbotInstruction} />
+        </Suspense>
       </div>
       <SpeedInsights/>
+      <Analytics/>
     </ThemeProvider>
   );
 };

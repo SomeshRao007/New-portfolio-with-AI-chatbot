@@ -99,6 +99,7 @@ export default function GalleryHoverCarousel({
                           <img
                             src={item.image}
                             alt={item.title}
+                            loading="lazy"
                             className="h-full w-full object-cover object-center"
                           />
                         ) : (

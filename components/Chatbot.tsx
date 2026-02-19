@@ -4,7 +4,19 @@ import type { ChatMessage } from '../types';
 import { MicrophoneIcon, XMarkIcon, ChatBubbleOvalLeftEllipsisIcon, PaperAirplaneIcon } from '@heroicons/react/24/solid';
 
 const RATE_LIMIT_WINDOW = 60 * 1000; // 1 minute in milliseconds
-const MAX_REQUESTS = 5; // Max requests per window 
+const MAX_REQUESTS = 5; // Max requests per window
+
+// Lazy singleton — only initializes when first called, returns null if key is missing
+let _ai: GoogleGenAI | null = null;
+
+function getAI(): GoogleGenAI | null {
+  const apiKey = process.env.GEMINI_API_KEY;
+  if (!apiKey) return null;
+  if (!_ai) {
+    _ai = new GoogleGenAI({ apiKey });
+  }
+  return _ai;
+}
 
 function decode(base64: string) {
   const binaryString = atob(base64);
@@ -144,16 +156,21 @@ const Chatbot: React.FC<ChatbotProps> = ({ systemInstruction }) => {
         return;
     }
 
+    const ai = getAI();
+    if (!ai) {
+      setHistory(prev => [...prev, { role: 'model', text: "⚠️ Chatbot unavailable: GEMINI_API_KEY is not configured." }]);
+      return;
+    }
+
     setIsLive(true);
     setStatus('Connecting...');
-    
+
     currentInputTranscriptionRef.current = '';
     currentOutputTranscriptionRef.current = '';
 
     try {
-      const ai = new GoogleGenAI({ apiKey: process.env.API_KEY as string });
       outputAudioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 24000 });
-      
+
       sessionPromiseRef.current = ai.live.connect({
         model: 'gemini-2.5-flash-native-audio-preview-09-2025',
         callbacks: {
@@ -227,8 +244,8 @@ const Chatbot: React.FC<ChatbotProps> = ({ systemInstruction }) => {
                 nextStartTimeRef.current = 0;
             }
           },
-          onerror: (e: ErrorEvent) => {
-            console.error('Gemini Live API Error:', e);
+          onerror: (_e: ErrorEvent) => {
+            console.error('Gemini Live API connection error');
             setStatus('Connection error. Please try again.');
             stopConversation();
           },
@@ -245,7 +262,7 @@ const Chatbot: React.FC<ChatbotProps> = ({ systemInstruction }) => {
         },
       });
     } catch (error) {
-      console.error("Failed to start conversation:", error);
+      console.error("Failed to start conversation");
       setStatus("Error: Couldn't access microphone.");
       setIsLive(false);
     }
@@ -256,14 +273,28 @@ const Chatbot: React.FC<ChatbotProps> = ({ systemInstruction }) => {
     const prompt = textInput.trim();
     if (!prompt || isReplying || isLive) return;
 
+    if (!checkRateLimit()) {
+      setHistory(prev => [...prev, {
+        role: 'model',
+        text: "⚠️ Rate limit reached. Dayam API keys are so costly!"
+      }]);
+      return;
+    }
+
+    const sanitizedPrompt = prompt.slice(0, 500);
+    const ai = getAI();
+    if (!ai) {
+      setHistory(prev => [...prev, { role: 'model', text: "⚠️ Dayam API keys are so costly, anyways forgot to configure one" }]);
+      return;
+    }
+
     setIsReplying(true);
-    const currentHistory = [...history, { role: 'user' as const, text: prompt }];
+    const currentHistory = [...history, { role: 'user' as const, text: sanitizedPrompt }];
     setHistory(currentHistory);
     setTextInput('');
 
     try {
-        const ai = new GoogleGenAI({ apiKey: process.env.API_KEY as string });
-        const response = await ai.models.generateContent({
+          const response = await ai.models.generateContent({
             model: 'gemini-2.5-flash',
             contents: currentHistory.map(msg => ({ role: msg.role, parts: [{ text: msg.text }] })),
             config: {
@@ -271,20 +302,10 @@ const Chatbot: React.FC<ChatbotProps> = ({ systemInstruction }) => {
             }
         });
 
-        if (!checkRateLimit()) {
-        const limitMessage: ChatMessage = { 
-            role: 'model', 
-            text: "⚠️ Rate limit reached. Please wait a moment before sending more messages." 
-        };
-        setHistory(prev => [...prev, limitMessage]);
-        setTextInput(''); // Optional: clear input or leave it for them to try again
-        return;
-    }
-
         const modelResponse = response.text;
         setHistory(prev => [...prev, { role: 'model', text: modelResponse }]);
     } catch (error) {
-        console.error("Text generation error:", error);
+        console.error("Text generation error");
         setHistory(prev => [...prev, { role: 'model', text: "Sorry, I encountered an error. Please try again." }]);
     } finally {
         setIsReplying(false);
@@ -357,6 +378,7 @@ const Chatbot: React.FC<ChatbotProps> = ({ systemInstruction }) => {
                         value={textInput}
                         onChange={(e) => setTextInput(e.target.value)}
                         placeholder="Type a message..."
+                        maxLength={500}
                         disabled={isLive || isReplying}
                         className="w-full px-4 py-2 border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
                     />

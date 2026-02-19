@@ -1,21 +1,21 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import type { Testimonial } from '../types';
-import { StaggerTestimonials } from './ui/stagger-testimonials'; 
+import { StaggerTestimonials } from './ui/stagger-testimonials';
 
 type TestimonialsProps = {
   data: Testimonial[];
 };
 
 const Testimonials: React.FC<TestimonialsProps> = ({ data }) => {
-  
-  const animationData = data.concat(data).concat(data).map((t, index) => ({
+
+  const animationData = useMemo(() => data.concat(data).concat(data).map((t, index) => ({
     tempId: index,
     testimonial: t.quote,
     author: t.author,
     role: t.role,
     company: t.company,
     imgSrc: t.imgSrc
-  }));
+  })), [data]);
 
   return (
     <section className="py-20 md:py-24 bg-slate-100/50 dark:bg-slate-800/50 rounded-2xl overflow-hidden">
