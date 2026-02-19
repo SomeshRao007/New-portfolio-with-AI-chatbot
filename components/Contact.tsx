@@ -46,12 +46,42 @@ const Contact: React.FC<ContactProps> = ({ formspreeEndpoint }) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Basic validation
+    const trimmedName = formData.name.trim();
+    const trimmedEmail = formData.email.trim();
+    const trimmedMessage = formData.message.trim();
+
+    if (!trimmedName || !trimmedEmail || !trimmedMessage) {
+      setStatus('error');
+      return;
+    }
+
+    if (trimmedName.length > 100 || trimmedEmail.length > 254 || trimmedMessage.length > 2000) {
+      setStatus('error');
+      return;
+    }
+
+    // Basic email format check
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(trimmedEmail)) {
+      setStatus('error');
+      return;
+    }
+
     setStatus('submitting');
 
     try {
+      const sanitizedData = {
+        name: trimmedName,
+        email: trimmedEmail,
+        message: trimmedMessage,
+        projectType: formData.projectType,
+      };
+
       const response = await fetch(formspreeEndpoint, {
         method: 'POST',
-        body: JSON.stringify(formData),
+        body: JSON.stringify(sanitizedData),
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json'
@@ -65,7 +95,7 @@ const Contact: React.FC<ContactProps> = ({ formspreeEndpoint }) => {
         setStatus('error');
       }
     } catch (error) {
-      console.error(error);
+      console.error("Contact form submission failed");
       setStatus('error');
     }
   };
@@ -141,29 +171,33 @@ const Contact: React.FC<ContactProps> = ({ formspreeEndpoint }) => {
 
             {/* Form */}
             <form onSubmit={handleSubmit} className="space-y-6">
+              {/* Honeypot field - hidden from humans, catches bots */}
+              <input type="text" name="_gotcha" style={{ display: 'none' }} tabIndex={-1} autoComplete="off" />
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="name">Your name</Label>
-                  <Input 
-                    id="name" 
-                    name="name" 
-                    placeholder="John Doe" 
-                    value={formData.name} 
-                    onChange={handleChange} 
-                    required 
+                  <Input
+                    id="name"
+                    name="name"
+                    placeholder="John Doe"
+                    value={formData.name}
+                    onChange={handleChange}
+                    required
+                    maxLength={100}
                     disabled={status === 'submitting'}
                   />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="email">Email</Label>
-                  <Input 
-                    id="email" 
-                    name="email" 
-                    type="email" 
-                    placeholder="john@example.com" 
-                    value={formData.email} 
-                    onChange={handleChange} 
-                    required 
+                  <Input
+                    id="email"
+                    name="email"
+                    type="email"
+                    placeholder="john@example.com"
+                    value={formData.email}
+                    onChange={handleChange}
+                    required
+                    maxLength={254}
                     disabled={status === 'submitting'}
                   />
                 </div>
@@ -179,6 +213,7 @@ const Contact: React.FC<ContactProps> = ({ formspreeEndpoint }) => {
                   value={formData.message}
                   onChange={handleChange}
                   required
+                  maxLength={2000}
                   disabled={status === 'submitting'}
                 />
               </div>

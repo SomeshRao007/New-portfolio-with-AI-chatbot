@@ -93,6 +93,7 @@ const Certifications: React.FC<CertificationsProps> = ({ data }) => {
                     <img
                       src={cert.imageUrl}
                       alt={cert.title}
+                      loading="lazy"
                       className="absolute top-0 left-0 w-full h-full object-cover"
                       draggable="false"
                     />

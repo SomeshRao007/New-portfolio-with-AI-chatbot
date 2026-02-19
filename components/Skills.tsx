@@ -1,5 +1,3 @@
-'use client'; // <--- This is CRITICAL for preventing blank screens
-
 import React, { useState } from 'react';
 import { SkillCategory } from '../types';
 import { Dock, DockIcon, DockItem, DockLabel } from '@/components/ui/dock';
@@ -12,7 +10,6 @@ import {
   Database, 
   Code 
 } from 'lucide-react';
-import { cn } from '@/lib/utils'; 
 
 type SkillsProps = {
   data: SkillCategory[];
@@ -81,10 +78,11 @@ const Skills: React.FC<SkillsProps> = ({ data }) => {
               className="bg-white dark:bg-slate-800 rounded-xl shadow-md p-6 flex flex-col items-center justify-center text-center hover:shadow-xl dark:hover:shadow-slate-700 hover:-translate-y-1 transition-all duration-300"
             >
               {skill.icon ? (
-                <img 
-                  src={skill.icon} 
-                  alt={`${skill.name} icon`} 
-                  className="h-10 w-10 md:h-12 md:w-12 mb-4 object-contain" 
+                <img
+                  src={skill.icon}
+                  alt={`${skill.name} icon`}
+                  loading="lazy"
+                  className="h-10 w-10 md:h-12 md:w-12 mb-4 object-contain"
                 />
               ) : (
                 <div className="h-10 w-10 md:h-12 md:w-12 mb-4 bg-slate-200 dark:bg-slate-700 rounded-full"></div>

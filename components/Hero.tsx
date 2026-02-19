@@ -148,7 +148,6 @@ const Hero: React.FC<HeroProps> = ({ data }) => {
             width={1400}
             className="mx-auto rounded-2xl object-cover h-full object-left-top"
             draggable={false}
-            priority={true} 
           />
         </ContainerScroll>
       </div>
