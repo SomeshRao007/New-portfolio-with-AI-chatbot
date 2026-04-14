@@ -182,7 +182,7 @@ const Chatbot: React.FC<ChatbotProps> = ({ systemInstruction }) => {
       outputAudioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 24000 });
 
       sessionPromiseRef.current = ai.live.connect({
-        model: 'gemini-2.5-flash-native-audio-preview-09-2025',
+        model: 'gemini-3.1-flash-live-preview',
         callbacks: {
           onopen: async () => {
             setStatus('Listening...');
@@ -197,7 +197,8 @@ const Chatbot: React.FC<ChatbotProps> = ({ systemInstruction }) => {
               const inputData = audioProcessingEvent.inputBuffer.getChannelData(0);
               const pcmBlob = createBlob(inputData);
               sessionPromiseRef.current?.then((session) => {
-                session.sendRealtimeInput({ media: pcmBlob });
+                // Send as an array of media chunks to fix listening
+                session.sendRealtimeInput([pcmBlob]);
               });
             };
             
