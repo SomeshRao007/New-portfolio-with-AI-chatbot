@@ -8,9 +8,9 @@ type LearningListProps = {
 
 const HtopBar: React.FC<{ label: string; percentage: number; colorClass: string }> = ({ label, percentage, colorClass }) => (
   <div className="flex items-center text-xs sm:text-sm font-mono mb-1">
-    <span className="w-12 text-slate-400">{label}</span>
-    <span className="w-10 text-slate-500 mr-2">[{percentage.toFixed(1)}%]</span>
-    <div className="flex-1 h-3 bg-slate-800 flex">
+    <span className="w-12 text-slate-400 shrink-0">{label}</span>
+    <span className="w-14 sm:w-16 text-slate-500 mr-2 shrink-0">[{percentage.toFixed(1)}%]</span>
+    <div className="flex-1 h-3 bg-slate-800 flex rounded overflow-hidden">
       <div className={`h-full ${colorClass}`} style={{ width: `${percentage}%` }}></div>
     </div>
   </div>

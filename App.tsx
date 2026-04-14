@@ -10,7 +10,7 @@ import { LiquidButton } from './components/ui/liquid-glass-button';
 import { SpeedInsights } from "@vercel/speed-insights/react"
 import { Analytics } from "@vercel/analytics/react"
 import { CustomCursor } from './components/CustomCursor';
-import { ParticleNetwork } from './components/ParticleNetwork';
+import BlueprintGrid from './components/BlueprintGrid';
 import { AnimatedSection } from './components/AnimatedSection';
 
 // Lazy-loaded below-fold components for better initial load performance
@@ -68,7 +68,7 @@ const App: React.FC = () => {
   return (
     <ThemeProvider>
       <CustomCursor />
-      <ParticleNetwork />
+      <BlueprintGrid />
       <div className="min-h-screen flex flex-col font-sans animate-in fade-in duration-1000">
         <Header name={portfolioData.personalInfo.name} />
         <main className="flex-grow container mx-auto px-4 md:px-8 py-8">
