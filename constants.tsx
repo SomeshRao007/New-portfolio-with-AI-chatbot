@@ -279,19 +279,19 @@ const TESTIMONIALS_DATA: Testimonial[] = [
       },
       {
           id: 2,
-          author: "Rajnandini", 
-          role: "Senior Developer", 
-          company: "Ericsson", 
-          imgSrc: "/images/social/raj.jpeg", 
-          quote: "Somesh is exceptionally quick at solving problems. He is a naturally curious engineer who is always pushing to learn more and grow his capabilities.",
-      },
-      {
-          id: 3,
           author: "Vamshi Goud", 
           role: "Team Lead", 
           company: "Pearlthoughts", 
           imgSrc: "/images/social/vam.jpeg", 
           quote: "He quickly deciphered our legacy Yii2 codebase and integrated essential monitoring tools, instantly enhancing the observability of our complex platform.",
+      },
+      {
+          id: 3,
+          author: "Rajnandini", 
+          role: "Senior Developer", 
+          company: "Ericsson", 
+          imgSrc: "/images/social/raj.jpeg", 
+          quote: "Somesh is exceptionally quick at solving problems. He is a naturally curious engineer who is always pushing to learn more and grow his capabilities.",
       },
       {
           id: 4,

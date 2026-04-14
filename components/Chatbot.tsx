@@ -182,7 +182,7 @@ const Chatbot: React.FC<ChatbotProps> = ({ systemInstruction }) => {
       outputAudioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 24000 });
 
       sessionPromiseRef.current = ai.live.connect({
-        model: 'gemini-2.5-flash-native-audio-preview-09-2025',
+        model: 'gemini-3.1-flash-live-preview',
         callbacks: {
           onopen: async () => {
             setStatus('Listening...');
@@ -197,7 +197,8 @@ const Chatbot: React.FC<ChatbotProps> = ({ systemInstruction }) => {
               const inputData = audioProcessingEvent.inputBuffer.getChannelData(0);
               const pcmBlob = createBlob(inputData);
               sessionPromiseRef.current?.then((session) => {
-                session.sendRealtimeInput({ media: pcmBlob });
+                // Send as an array of media chunks to fix listening
+                session.sendRealtimeInput([pcmBlob]);
               });
             };
             
@@ -362,26 +363,36 @@ const Chatbot: React.FC<ChatbotProps> = ({ systemInstruction }) => {
     <>
       <button
         onClick={toggleOpen}
-        className="fixed bottom-6 right-6 w-16 h-16 bg-blue-600 text-white rounded-full shadow-lg flex items-center justify-center hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 transition-transform transform hover:scale-110 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 z-50"
+        className="fixed bottom-6 right-6 w-16 h-16 bg-[#0d1117]/80 backdrop-blur-md text-blue-400 border border-blue-500/50 rounded-full shadow-[0_0_15px_rgba(59,130,246,0.3)] flex items-center justify-center hover:bg-blue-900/50 hover:text-blue-300 transition-all transform hover:scale-110 focus:outline-none z-50 group"
         aria-label="Open Chatbot"
       >
-        <ChatBubbleOvalLeftEllipsisIcon className="w-8 h-8" />
+        {/* Adds a slight scanning line effect on hover */}
+        <div className="absolute inset-0 rounded-full overflow-hidden opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+           <div className="w-full h-[2px] bg-blue-400 absolute animate-[scan_2s_linear_infinite]"></div>
+        </div>
+        <ChatBubbleOvalLeftEllipsisIcon className="w-8 h-8 relative z-10" />
       </button>
 
       {isOpen && (
-        <div className="fixed bottom-24 right-6 w-[calc(100%-3rem)] max-w-sm h-[70vh] max-h-[600px] bg-white dark:bg-slate-800 rounded-2xl shadow-2xl flex flex-col z-50 overflow-hidden animate-fade-in-up">
-          <header className="flex items-center justify-between p-4 bg-blue-600 dark:bg-blue-700 text-white">
-            <h3 className="font-bold text-lg">Jarvis AI</h3>
-            <button onClick={toggleOpen} className="hover:bg-blue-700 dark:hover:bg-blue-800 p-1 rounded-full">
-              <XMarkIcon className="w-6 h-6" />
+        <div className="fixed bottom-24 right-6 w-[calc(100%-3rem)] max-w-sm h-[70vh] max-h-[600px] bg-[#0d1117]/95 backdrop-blur-xl rounded-xl border border-slate-700/50 shadow-[0_10px_30px_rgba(0,0,0,0.5)] flex flex-col z-50 overflow-hidden animate-fade-in-up font-mono">
+          <header className="flex items-center justify-between px-4 py-3 bg-[#161b22] border-b border-gray-800 text-slate-300">
+            <div className="flex items-center gap-2">
+               <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
+               <h3 className="font-bold text-sm tracking-wider">JARVIS_TERMINAL</h3>
+            </div>
+            <button onClick={toggleOpen} className="hover:bg-slate-700 hover:text-white p-1 rounded transition-colors">
+              <XMarkIcon className="w-5 h-5" />
             </button>
           </header>
 
-          <div ref={chatContainerRef} className="flex-1 p-4 overflow-y-auto space-y-4">
+          <div ref={chatContainerRef} className="flex-1 p-4 overflow-y-auto space-y-4 scrollbar-thin scrollbar-thumb-slate-700">
             {history.map((msg, index) => (
               <div key={index} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                <div className={`max-w-[80%] p-3 rounded-2xl ${msg.role === 'user' ? 'bg-blue-500 text-white rounded-br-lg' : 'bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-slate-200 rounded-bl-lg'}`}>
-                  <p className="text-sm">{msg.text}</p>
+                <div className={`max-w-[85%] p-3 rounded-lg text-sm ${
+                    msg.role === 'user' ? 'bg-blue-900/40 border border-blue-500/30 text-blue-100' 
+                    : 'bg-slate-800/60 border border-slate-700/50 text-slate-300'
+                }`}>
+                  <p className="whitespace-pre-wrap leading-relaxed">{msg.text}</p>
                 </div>
               </div>
             ))}
@@ -389,40 +400,47 @@ const Chatbot: React.FC<ChatbotProps> = ({ systemInstruction }) => {
 
           <OrbVisualizer analyser={activeAnalyser} isLive={isLive} />
 
-          <div className="p-4 border-t border-slate-200 dark:border-slate-700">
-             <p className="text-center text-sm text-slate-500 dark:text-slate-400 mb-2 h-4">{getStatusText()}</p>
+          <div className="p-4 border-t border-slate-800 bg-[#0d1117]/80">
+             <p className="text-center text-[10px] text-slate-500 uppercase tracking-widest mb-3 h-3 flex items-center justify-center">
+                 {isLive ? <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse mr-2"></span> : null}
+                 {getStatusText()}
+             </p>
              <div className="flex items-center gap-2">
-                <form onSubmit={handleTextSubmit} className="flex-grow flex items-center gap-2">
+                <form onSubmit={handleTextSubmit} className="flex-grow flex items-center">
+                    <span className="text-green-500 mr-2 font-bold select-none">&gt;</span>
                     <input
                         type="text"
                         value={textInput}
                         onChange={(e) => setTextInput(e.target.value)}
-                        placeholder="Type a message..."
+                        placeholder="Enter command..."
                         maxLength={500}
                         disabled={isLive || isReplying}
-                        className="w-full px-4 py-2 border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
+                        className="w-full bg-transparent border-none text-slate-200 placeholder-slate-600 focus:outline-none focus:ring-0 disabled:opacity-50 text-sm"
                     />
                     <button
                         type="submit"
                         disabled={isLive || isReplying || !textInput.trim()}
-                        className="w-10 h-10 flex-shrink-0 bg-blue-600 text-white rounded-full flex items-center justify-center hover:bg-blue-700 disabled:bg-slate-400 disabled:cursor-not-allowed transition-colors"
+                        className="w-8 h-8 flex-shrink-0 flex items-center justify-center text-slate-500 hover:text-blue-400 disabled:text-slate-700 disabled:cursor-not-allowed transition-colors"
                         aria-label="Send message"
                     >
-                        <PaperAirplaneIcon className="w-5 h-5" />
+                        <PaperAirplaneIcon className="w-4 h-4" />
                     </button>
                 </form>
+                <div className="w-px h-6 bg-slate-700 mx-1"></div>
                 <button
                     onClick={toggleConversation}
-                    className={`w-12 h-12 flex-shrink-0 rounded-full flex items-center justify-center transition-all duration-300 shadow-md ${
-                        isLive ? 'bg-red-500 hover:bg-red-600' : 'bg-blue-600 hover:bg-blue-700'
-                    } text-white disabled:bg-slate-400 disabled:cursor-not-allowed`}
+                    className={`w-10 h-10 flex-shrink-0 rounded flex items-center justify-center transition-all duration-300 border ${
+                        isLive 
+                        ? 'border-red-500/50 bg-red-900/30 text-red-500 hover:bg-red-900/50 shadow-[0_0_10px_rgba(239,68,68,0.2)]' 
+                        : 'border-slate-700 bg-slate-800 text-slate-400 hover:text-blue-400 hover:border-blue-500/50'
+                    } disabled:opacity-50 disabled:cursor-not-allowed`}
                     aria-label={isLive ? 'Stop conversation' : 'Start conversation'}
                     disabled={isReplying}
                 >
                     {isLive ? (
-                        <div className="w-5 h-5 bg-white rounded-sm animate-pulse"></div>
+                        <div className="w-3 h-3 bg-red-500 rounded-sm animate-pulse"></div>
                     ) : (
-                        <MicrophoneIcon className="w-6 h-6" />
+                        <MicrophoneIcon className="w-5 h-5" />
                     )}
                 </button>
             </div>
@@ -436,6 +454,10 @@ const Chatbot: React.FC<ChatbotProps> = ({ systemInstruction }) => {
         }
         .animate-fade-in-up {
           animation: fade-in-up 0.3s ease-out forwards;
+        }
+        @keyframes scan {
+          0% { top: -20%; }
+          100% { top: 120%; }
         }
       `}</style>
     </>

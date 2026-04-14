@@ -1,10 +1,6 @@
 import React, { useState } from 'react';
-import { Button } from './ui/button';
-import { Input } from './ui/input';
-import { Textarea } from './ui/textarea';
-import { Label } from './ui/label';
-import { Checkbox } from './ui/checkbox';
 import { INITIAL_DATA } from '@/constants'; 
+import { motion } from 'framer-motion';
 
 type ContactProps = {
   formspreeEndpoint: string;
@@ -33,10 +29,11 @@ const Contact: React.FC<ContactProps> = ({ formspreeEndpoint }) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleCheckboxChange = (type: string, checked: boolean) => {
+  const handleCheckboxChange = (type: string) => {
+    if (status === 'submitting' || status === 'success') return;
     setFormData((prev) => {
       const currentTypes = prev.projectType;
-      if (checked) {
+      if (!currentTypes.includes(type)) {
         return { ...prev, projectType: [...currentTypes, type] };
       } else {
         return { ...prev, projectType: currentTypes.filter((t) => t !== type) };
@@ -46,6 +43,7 @@ const Contact: React.FC<ContactProps> = ({ formspreeEndpoint }) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (status === 'submitting' || status === 'success') return;
 
     // Basic validation
     const trimmedName = formData.name.trim();
@@ -54,18 +52,14 @@ const Contact: React.FC<ContactProps> = ({ formspreeEndpoint }) => {
 
     if (!trimmedName || !trimmedEmail || !trimmedMessage) {
       setStatus('error');
+      setTimeout(() => setStatus('idle'), 3000);
       return;
     }
 
-    if (trimmedName.length > 100 || trimmedEmail.length > 254 || trimmedMessage.length > 2000) {
-      setStatus('error');
-      return;
-    }
-
-    // Basic email format check
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(trimmedEmail)) {
       setStatus('error');
+      setTimeout(() => setStatus('idle'), 3000);
       return;
     }
 
@@ -90,13 +84,14 @@ const Contact: React.FC<ContactProps> = ({ formspreeEndpoint }) => {
 
       if (response.ok) {
         setStatus('success');
-        setFormData({ name: '', email: '', message: '', projectType: [] });
+        // Do not reset right away so they can see their code, just keep it disabled
       } else {
-        setStatus('error');
+        throw new Error("Response was not ok");
       }
     } catch (error) {
-      console.error("Contact form submission failed");
+      console.error("Contact form submission failed", error);
       setStatus('error');
+      setTimeout(() => setStatus('idle'), 3000);
     }
   };
 
@@ -106,173 +101,226 @@ const Contact: React.FC<ContactProps> = ({ formspreeEndpoint }) => {
     'Cloud Strategy & Consulting', 'Other'
   ];
 
-  const backgroundImageSrc = "/wallpaperflare.jpg";
-
   return (
-    <section className="relative min-h-screen w-full overflow-hidden bg-background">
-      {/* Background Image and Animated Bubbles */}
-      <div
-        className="absolute inset-0 bg-cover bg-center transition-all duration-500 ease-in-out"
-        style={{ backgroundImage: `url(${backgroundImageSrc})` }}
-      >
-        {/* Animated Bubbles Overlay */}
-        <div className="absolute inset-0 z-0 overflow-hidden bg-black/40">
-          {Array.from({ length: 15 }).map((_, i) => (
-            <div
-              key={i}
-              className="absolute bg-white/10 rounded-full animate-bubble opacity-0"
-              style={{
-                width: `${Math.random() * 20 + 10}px`,
-                height: `${Math.random() * 20 + 10}px`,
-                left: `${Math.random() * 100}%`,
-                animationDelay: `${Math.random() * 10}s`,
-                // @ts-ignore custom CSS variable for animation
-                '--animation-duration': `${Math.random() * 20 + 10}s`,
-                top: `${Math.random() * 100}%`,
-              }}
-            />
-          ))}
-        </div>
-      </div>
+    <section className="relative min-h-screen w-full bg-transparent flex flex-col items-center py-20 overflow-hidden z-10 pointer-events-auto">
 
-      {/* Main Content Overlay */}
-      <div className="relative z-10 flex flex-col items-center justify-center w-full min-h-screen p-4 md:p-8 lg:p-12">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 w-full max-w-7xl p-4 md:p-8">
-          
-          {/* Left Side: Title */}
-          <div className="flex flex-col justify-center p-4 lg:p-8 text-white">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight drop-shadow-lg max-w-lg mb-4">
-              We can turn your dream project into reality
-            </h1>
-            <p className="text-lg text-white/80">
-                Let's build something amazing together.
-            </p>
+      <div className="container mx-auto px-4 relative z-10 w-full max-w-5xl">
+        {/* Header section */}
+        <div className="mb-12 flex flex-col md:flex-row md:items-end justify-between">
+            <div className="max-w-2xl">
+              <p className="text-sm text-blue-600 dark:text-blue-500 font-bold tracking-widest uppercase mb-2">&gt; /ROOT/CONTACT</p>
+              <h2 className="text-4xl md:text-5xl font-extrabold text-slate-900 dark:text-slate-50 drop-shadow-lg leading-tight mb-4">
+                Initiate Handshake.
+              </h2>
+              <p className="text-lg text-slate-700 dark:text-slate-400 font-mono">
+                $ echo "Let's build something amazing together." &gt; /dev/tcp/someshos/443
+              </p>
+            </div>
+            
+            {/* Socials floating on right */}
+            <div className="flex items-center space-x-4 mt-8 md:mt-0">
+               {mappedSocialLinks.map((link) => (
+                 <a 
+                   key={link.id} 
+                   href={link.href} 
+                   target="_blank" 
+                   rel="noopener noreferrer" 
+                   className="w-12 h-12 rounded-full border border-slate-700 bg-slate-900/80 flex items-center justify-center hover:bg-blue-600 hover:border-blue-400 transition-all shadow-lg group"
+                 >
+                   <img src={link.iconSrc} alt={link.name} className="h-5 w-5 brightness-0 invert opacity-70 group-hover:opacity-100 transition-opacity" />
+                 </a>
+               ))}
+            </div>
+        </div>
+
+        {/* Bash Terminal IDE Block */}
+        <motion.div 
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="w-full bg-[#0d1117] rounded-xl border border-slate-800 shadow-2xl overflow-hidden font-mono text-sm sm:text-base relative"
+        >
+          {/* Mac/Linux terminal top bar */}
+          <div className="flex items-center px-4 py-3 bg-[#161b22] border-b border-gray-800">
+            <div className="flex space-x-2">
+              <div className="w-3 h-3 rounded-full bg-red-500 hover:bg-red-400 transition-colors"></div>
+              <div className="w-3 h-3 rounded-full bg-yellow-500 hover:bg-yellow-400 transition-colors"></div>
+              <div className="w-3 h-3 rounded-full bg-green-500 hover:bg-green-400 transition-colors"></div>
+            </div>
+            <div className="mx-auto text-slate-400 text-xs text-center flex-1 pr-12 font-semibold">
+              ~/scripts/send_handshake.sh
+            </div>
           </div>
 
-          {/* Right Side: Contact Form */}
-          <div className="bg-background/95 backdrop-blur-md p-6 md:p-8 rounded-2xl shadow-2xl border border-border">
-            <h2 className="text-2xl font-bold text-foreground mb-6">Drop me a message! 👋</h2>
-
-            {/* Email & Socials */}
-            <div className="mb-6">
-              <p className="text-muted-foreground mb-2">Connect with me</p>
-              <div className="flex items-center space-x-3 mt-4">
-                {mappedSocialLinks.map((link) => (
-                  <Button key={link.id} variant="outline" size="icon" asChild className="rounded-full">
-                    <a href={link.href} target="_blank" rel="noopener noreferrer" aria-label={link.name}>
-                      <img src={link.iconSrc} alt={link.name} className="h-4 w-4 dark:invert" />
-                    </a>
-                  </Button>
-                ))}
+          <form onSubmit={handleSubmit} className="p-6 md:p-8 space-y-2 text-slate-300 overflow-x-auto relative">
+            
+            {/* Overlay if success */}
+            {status === 'success' && (
+              <div className="absolute inset-0 z-20 bg-[#0d1117]/80 backdrop-blur-sm flex flex-col items-center justify-center">
+                 <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="flex flex-col items-center">
+                    <div className="w-16 h-16 rounded-full bg-green-500/20 border border-green-500 flex items-center justify-center mb-4">
+                      <span className="text-green-500 font-bold text-2xl">✓</span>
+                    </div>
+                    <p className="text-green-400 font-bold text-lg">PACKET_DELIVERED [200 OK]</p>
+                    <p className="text-slate-400 text-sm mt-2">I have received your message.</p>
+                 </motion.div>
               </div>
+            )}
+
+            {/* Line numbers and code execution */}
+            <div className="flex items-center group">
+              <span className="text-slate-600 w-6 text-right select-none mr-4">1</span>
+              <span className="text-slate-500 italic">#!/bin/bash</span>
+            </div>
+            <div className="flex items-center">
+              <span className="text-slate-600 w-6 text-right select-none mr-4">2</span>
+              <span className="text-slate-500 italic"># Configure payload variables to establish connection</span>
+            </div>
+            <div className="flex items-center">
+              <span className="text-slate-600 w-6 text-right select-none mr-4">3</span>
+            </div>
+            
+            {/* NAME INPUT */}
+            <div className="flex items-center h-8 group focus-within:bg-white/[0.02] rounded px-1 -mx-1">
+              <span className="text-slate-600 w-6 text-right select-none mr-4 opacity-50 group-hover:opacity-100 transition-opacity">4</span>
+              <span className="text-pink-400 font-bold">export</span>
+              <span className="text-blue-300 ml-2">NAME</span>
+              <span className="text-white">=</span>
+              <span className="text-green-400">"</span>
+              <input 
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                placeholder="John Doe"
+                className="bg-transparent border-none outline-none text-green-400 placeholder:text-green-400/30 flex-1 min-w-[200px]"
+                disabled={status !== 'idle' && status !== 'error'}
+                required
+                spellCheck={false}
+              />
+              <span className="text-green-400">"</span>
             </div>
 
-            <hr className="my-6 border-border" />
+            {/* EMAIL INPUT */}
+            <div className="flex items-center h-8 group focus-within:bg-white/[0.02] rounded px-1 -mx-1">
+              <span className="text-slate-600 w-6 text-right select-none mr-4 opacity-50 group-hover:opacity-100 transition-opacity">5</span>
+              <span className="text-pink-400 font-bold">export</span>
+              <span className="text-blue-300 ml-2">EMAIL</span>
+              <span className="text-white">=</span>
+              <span className="text-green-400">"</span>
+              <input 
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                placeholder="john@example.com"
+                className="bg-transparent border-none outline-none text-green-400 placeholder:text-green-400/30 flex-1 min-w-[200px]"
+                disabled={status !== 'idle' && status !== 'error'}
+                required
+                spellCheck={false}
+              />
+              <span className="text-green-400">"</span>
+            </div>
 
-            {/* Form */}
-            <form onSubmit={handleSubmit} className="space-y-6">
-              {/* Honeypot field - hidden from humans, catches bots */}
-              <input type="text" name="_gotcha" style={{ display: 'none' }} tabIndex={-1} autoComplete="off" />
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="name">Your name</Label>
-                  <Input
-                    id="name"
-                    name="name"
-                    placeholder="John Doe"
-                    value={formData.name}
-                    onChange={handleChange}
-                    required
-                    maxLength={100}
-                    disabled={status === 'submitting'}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="email">Email</Label>
-                  <Input
-                    id="email"
-                    name="email"
-                    type="email"
-                    placeholder="john@example.com"
-                    value={formData.email}
-                    onChange={handleChange}
-                    required
-                    maxLength={254}
-                    disabled={status === 'submitting'}
-                  />
-                </div>
-              </div>
+            <div className="flex items-center">
+               <span className="text-slate-600 w-6 text-right select-none mr-4">6</span>
+            </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="message">Briefly describe your project idea...</Label>
-                <Textarea
-                  id="message"
+            {/* FLAGS (CHECKBOXES) */}
+            <div className="flex items-center">
+               <span className="text-slate-600 w-6 text-right select-none mr-4">7</span>
+               <span className="text-blue-300">REQUEST_FLAGS</span>
+               <span className="text-white">=(</span>
+            </div>
+            
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-y-1 my-1">
+              {projectTypeOptions.map((opt, i) => {
+                const isSelected = formData.projectType.includes(opt);
+                const flagStr = `--${opt.toLowerCase().replace(/ /g, '-')}`;
+                return (
+                  <div key={opt} className="flex pl-12 items-center cursor-pointer group/flag h-8" onClick={() => handleCheckboxChange(opt)}>
+                    <span className="hidden">8</span> {/* Real line numbers handled differently here for layout, omitted visually for array fields to preserve cleanness */}
+                    <span className="text-slate-600 w-6 select-none mr-4 opacity-0"></span>
+                    <span className={`transition-colors flex-1 ${isSelected ? 'text-yellow-300' : 'text-slate-500 group-hover/flag:text-slate-400'}`}>
+                      {isSelected ? `"${flagStr}"` : `# "${flagStr}"`}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+
+            <div className="flex items-center">
+               <span className="text-slate-600 w-6 text-right select-none mr-4">17</span>
+               <span className="text-white">)</span>
+            </div>
+
+            <div className="flex items-center">
+               <span className="text-slate-600 w-6 text-right select-none mr-4">18</span>
+            </div>
+
+            {/* MULTI-LINE MESSAGE INPUT */}
+            <div className="flex items-start group focus-within:bg-white/[0.02] rounded px-1 -mx-1 py-1">
+               <span className="text-slate-600 w-6 text-right select-none mr-4 mt-1 opacity-50 group-hover:opacity-100 transition-opacity">19</span>
+               <span className="text-pink-400 font-bold mt-1">cat</span>
+               <span className="text-white ml-2 mt-1">&lt;&lt; 'EOF' &gt;</span>
+               <span className="text-blue-300 ml-2 mt-1">payload.txt</span>
+            </div>
+            <div className="flex items-start group focus-within:bg-white/[0.02] rounded px-1 -mx-1 py-1">
+               <span className="text-slate-600 w-6 text-right select-none mr-4 opacity-0">20</span>
+               <textarea 
                   name="message"
-                  placeholder="I want to build a..."
-                  className="min-h-[80px]"
                   value={formData.message}
                   onChange={handleChange}
+                  placeholder="I am looking to build a highly scalable infrastructure..."
+                  className="bg-transparent border-none outline-none text-slate-300 placeholder:text-slate-600 w-full min-h-[100px] resize-y"
+                  disabled={status !== 'idle' && status !== 'error'}
                   required
-                  maxLength={2000}
-                  disabled={status === 'submitting'}
-                />
+                  spellCheck={false}
+               />
+            </div>
+            <div className="flex items-center mt-1">
+               <span className="text-slate-600 w-6 text-right select-none mr-4">21</span>
+               <span className="text-white font-bold">EOF</span>
+            </div>
+
+            <div className="flex items-center">
+               <span className="text-slate-600 w-6 text-right select-none mr-4">22</span>
+            </div>
+
+            {/* HONEYPOT */}
+            <input type="text" name="_gotcha" style={{ display: 'none' }} tabIndex={-1} autoComplete="off" />
+
+            {/* SUBMIT BUTTON / EXECUTION INDICATOR */}
+            <div className="flex items-center relative mt-4 pt-4 border-t border-slate-800">
+               <span className="text-slate-600 w-6 text-right select-none mr-4">23</span>
+               {(status === 'idle' || status === 'error') ? (
+                  <button type="submit" className="flex items-center group cursor-pointer w-full text-left bg-transparent border-none outline-none">
+                     <span className="text-pink-400 font-bold">./send</span>
+                     <span className="text-slate-300 mx-2">--dispatch</span>
+                     <span className="text-white transition-colors group-hover:text-green-400">
+                       $NAME $EMAIL $REQUEST_FLAGS $(cat payload.txt)
+                     </span>
+                     <span className="ml-auto flex items-center justify-center border border-slate-600 px-3 py-1 rounded text-xs text-slate-400 group-hover:bg-slate-800 group-hover:text-white transition-all group-hover:border-blue-500 group-hover:shadow-[0_0_10px_rgba(59,130,246,0.3)]">
+                        [EXECUTE]
+                     </span>
+                  </button>
+               ) : status === 'submitting' ? (
+                  <div className="flex items-center text-yellow-400 animate-pulse w-full">
+                     <span className="mr-2">[*] Payload compiling...</span>
+                  </div>
+               ) : null}
+            </div>
+            
+            {status === 'error' && (
+              <div className="flex items-center mt-2">
+                 <span className="text-slate-600 w-6 text-right select-none mr-4">24</span>
+                 <span className="text-red-500 font-bold">bash: Error establishing socket. Please check network or payload variables.</span>
               </div>
+            )}
 
-              <div className="space-y-4">
-                <p className="text-sm font-medium text-muted-foreground">I'm looking for...</p>
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                  {projectTypeOptions.map((option) => (
-                    <div key={option} className="flex items-center space-x-2">
-                      <Checkbox
-                        id={option.replace(/\s/g, '-').toLowerCase()}
-                        checked={formData.projectType.includes(option)}
-                        onCheckedChange={(checked) => handleCheckboxChange(option, checked as boolean)}
-                        disabled={status === 'submitting'}
-                      />
-                      <Label htmlFor={option.replace(/\s/g, '-').toLowerCase()} className="text-sm font-normal cursor-pointer">
-                        {option}
-                      </Label>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <Button type="submit" className="w-full" disabled={status === 'submitting'}>
-                {status === 'submitting' ? 'Sending...' : 'Send Message'}
-              </Button>
-
-              {status === 'success' && (
-                <p className="text-green-600 text-center font-medium">Message sent successfully!</p>
-              )}
-              {status === 'error' && (
-                <p className="text-red-500 text-center font-medium">Something went wrong. Please try again.</p>
-              )}
-            </form>
-          </div>
-        </div>
+          </form>
+        </motion.div>
       </div>
-
-      {/* CSS for bubble animation */}
-      <style jsx global>{`
-        @keyframes bubble {
-          0% {
-            transform: translateY(0) translateX(0) scale(0.5);
-            opacity: 0;
-          }
-          50% {
-            opacity: 1;
-          }
-          100% {
-            transform: translateY(-100vh) translateX(calc(var(--rand-x-offset, 0) * 10vw)) scale(1.2);
-            opacity: 0;
-          }
-        }
-        .animate-bubble {
-          animation: bubble var(--animation-duration, 15s) ease-in-out infinite;
-          animation-fill-mode: forwards;
-          --rand-x-offset: ${Math.random() > 0.5 ? 1 : -1};
-        }
-      `}</style>
     </section>
   );
 };

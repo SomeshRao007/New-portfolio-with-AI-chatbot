@@ -16,10 +16,10 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       if (storedTheme === 'dark' || storedTheme === 'light') {
         return storedTheme;
       }
-      // Default to light mode if no theme is stored.
-      return 'light';
+      // Default to dark mode if no theme is stored.
+      return 'dark';
     }
-    return 'light';
+    return 'dark';
   });
 
   useEffect(() => {
