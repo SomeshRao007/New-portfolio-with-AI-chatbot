@@ -1,96 +1,111 @@
-import React, { useState, useMemo, useEffect, useRef } from 'react';
+import React, { useState, useMemo, useRef } from 'react';
 import type { TimelineEvent } from '../types';
 import { XMarkIcon, BriefcaseIcon, AcademicCapIcon, StarIcon } from '@heroicons/react/24/solid';
+import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
 
 type TimelineProps = {
   data: TimelineEvent[];
 };
 
 const iconMap: { [key in TimelineEvent['icon']]: React.ReactNode } = {
-  work: <BriefcaseIcon className="w-5 h-5 text-white" />,
-  education: <AcademicCapIcon className="w-5 h-5 text-white" />,
-  milestone: <StarIcon className="w-5 h-5 text-white" />,
+  work: <BriefcaseIcon className="w-5 h-5 text-current" />,
+  education: <AcademicCapIcon className="w-5 h-5 text-current" />,
+  milestone: <StarIcon className="w-5 h-5 text-current" />,
 };
 
 const TimelineModal: React.FC<{ event: TimelineEvent; onClose: () => void }> = ({ event, onClose }) => {
   return (
-    <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 animate-fade-in" onClick={onClose}>
-      <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl max-w-2xl w-full p-6 md:p-8 relative" onClick={(e) => e.stopPropagation()}>
+    <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 animate-fade-in pointer-events-auto" onClick={onClose}>
+      <motion.div 
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0, scale: 0.9 }}
+        className="bg-slate-900 border border-slate-700 rounded-2xl shadow-[0_0_40px_rgba(59,130,246,0.15)] max-w-2xl w-full p-6 md:p-8 relative" 
+        onClick={(e) => e.stopPropagation()}
+      >
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 transition-colors"
+          className="absolute top-4 right-4 text-slate-400 hover:text-slate-200 transition-colors"
           aria-label="Close modal"
         >
           <XMarkIcon className="w-6 h-6" />
         </button>
         <div>
-          <p className="text-blue-500 dark:text-blue-400 font-semibold mb-2">{new Date(event.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long' })}</p>
-          <h3 className="text-2xl font-bold text-slate-800 dark:text-slate-100 mb-4">{event.title}</h3>
-          <p className="text-slate-600 dark:text-slate-300 leading-relaxed">{event.fullDescription}</p>
+          <p className="text-blue-400 font-bold mb-2 uppercase tracking-widest text-xs">{new Date(event.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long' })}</p>
+          <h3 className="text-2xl font-bold text-slate-100 mb-4">{event.title}</h3>
+          <p className="text-slate-300 leading-relaxed text-sm md:text-base">{event.fullDescription}</p>
         </div>
-      </div>
-       <style>{`
-        @keyframes fade-in {
-          from { opacity: 0; }
-          to { opacity: 1; }
-        }
-        .animate-fade-in {
-          animation: fade-in 0.2s ease-out forwards;
-        }
-      `}</style>
+      </motion.div>
     </div>
   );
 };
 
 const TimelineItem: React.FC<{ event: TimelineEvent; index: number; onReadMore: (event: TimelineEvent) => void }> = ({ event, index, onReadMore }) => {
-  const [isVisible, setIsVisible] = useState(false);
-  const itemRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-          observer.disconnect();
-        }
-      },
-      { threshold: 0.2, rootMargin: '0px 0px -50px 0px' }
-    );
-
-    if (itemRef.current) {
-      observer.observe(itemRef.current);
-    }
-    return () => observer.disconnect();
-  }, []);
-
   const isRightAligned = index % 2 === 0;
 
   return (
-    <div ref={itemRef} className="relative pl-12 md:pl-0 md:grid md:grid-cols-2 md:gap-x-12 items-start group">
-      {/* Icon */}
-      <div className="absolute left-4 md:left-1/2 top-1 -translate-x-1/2 w-10 h-10 bg-blue-500 dark:bg-blue-400 rounded-full flex items-center justify-center ring-8 ring-slate-50 dark:ring-slate-900 z-10">
+    <motion.div 
+      className="relative pl-12 md:pl-0 md:grid md:grid-cols-2 md:gap-x-12 items-start group pb-4"
+      initial={{ opacity: 0, y: 50 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-50px" }}
+      transition={{ duration: 0.5, delay: 0.1 }}
+    >
+      {/* RPG Skill Node (Icon) */}
+      <motion.div 
+        className="absolute left-4 md:left-1/2 top-4 -translate-x-1/2 w-12 h-12 rounded-full flex items-center justify-center z-20 border-[3px] border-slate-700 bg-slate-900 text-slate-500 transition-colors duration-500"
+        whileInView={{
+          borderColor: "#3b82f6",
+          backgroundColor: "#1e3a8a", // dark blue
+          boxShadow: "0 0 20px rgba(59,130,246,0.8)",
+          color: "#ffffff"
+        }}
+        viewport={{ margin: "-50% 0px -50% 0px" }} // Lights up exactly when crossing center of screen
+      >
         {iconMap[event.icon]}
-      </div>
+      </motion.div>
       
-      {/* Content */}
-      <div className={`transition-all duration-700 ease-out ${isRightAligned ? 'md:col-start-2' : 'md:col-start-1 md:row-start-1 md:text-right'} ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-        <div className="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-md border border-slate-100 dark:border-slate-700 group-hover:shadow-xl dark:group-hover:shadow-slate-700 group-hover:-translate-y-1 transition-all duration-300">
-          <p className="text-blue-500 dark:text-blue-400 font-semibold mb-1">{new Date(event.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long' })}</p>
-          <h3 className="text-xl font-bold text-slate-800 dark:text-slate-100 mb-2">{event.title}</h3>
-          <p className="text-slate-600 dark:text-slate-300">{event.description}</p>
-          <button onClick={() => onReadMore(event)} className="mt-4 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700 transition-colors text-sm font-semibold">
-            Read More
+      {/* Skill Node Details */}
+      <div className={`${isRightAligned ? 'md:col-start-2' : 'md:col-start-1 md:row-start-1 md:text-right'}`}>
+        <motion.div 
+          whileHover={{ scale: 1.02 }}
+          className="bg-slate-800/80 backdrop-blur-sm p-6 rounded-xl border border-slate-700 shadow-lg relative overflow-hidden group-hover:border-blue-500/50 group-hover:shadow-[0_0_20px_rgba(59,130,246,0.15)] transition-all duration-300"
+        >
+          {/* Subtle glow inside card */}
+          <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-xl opacity-0 group-hover:opacity-10 blur-xl transition-opacity duration-500"></div>
+          
+          <p className="text-blue-400 font-bold mb-1 tracking-wider text-xs uppercase">{new Date(event.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long' })}</p>
+          <h3 className="text-xl font-bold text-slate-100 mb-2 relative z-10">{event.title}</h3>
+          <p className="text-slate-400 text-sm relative z-10 mb-4">{event.description}</p>
+          
+          <button 
+            onClick={() => onReadMore(event)} 
+            className="relative z-10 text-xs font-bold text-slate-300 hover:text-white px-4 py-2 rounded border border-slate-600 hover:border-blue-500 hover:bg-blue-500/20 transition-all"
+          >
+            OPEN NODE
           </button>
-        </div>
+        </motion.div>
       </div>
-    </div>
+    </motion.div>
   );
 };
-
 
 const Timeline: React.FC<TimelineProps> = ({ data }) => {
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<TimelineEvent | null>(null);
+
+  const containerRef = useRef<HTMLDivElement>(null);
+  
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start center", "end center"]
+  });
+
+  const smoothProgress = useSpring(scrollYProgress, {
+    stiffness: 100,
+    damping: 30,
+    restDelta: 0.001
+  });
 
   const sortedData = useMemo(() => {
     return [...data].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
@@ -107,23 +122,33 @@ const Timeline: React.FC<TimelineProps> = ({ data }) => {
   };
 
   return (
-    <section className="py-20 md:py-24 bg-slate-50 dark:bg-slate-900">
+    <section className="py-20 md:py-24 bg-transparent relative z-10 pointer-events-auto">
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
-          <p className="text-sm text-blue-600 dark:text-blue-400 font-semibold">Timeline</p>
-          <h2 className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-slate-50">My journey so far</h2>
-          <p className="mt-4 text-lg text-slate-600 dark:text-slate-400">All my academic and professional experience with some milestones achieved are summed up here.</p>
+          <p className="text-sm text-blue-500 font-bold tracking-widest uppercase mb-2">&gt; SELECT_PATHWAY</p>
+          <h2 className="text-3xl md:text-5xl font-extrabold text-slate-50 drop-shadow-lg">Skill Tree</h2>
+          <p className="mt-4 text-lg text-slate-400">Scroll to unlock experiential milestones.</p>
         </div>
-        <div className="relative max-w-4xl mx-auto">
-          {/* Vertical line */}
-          <div className="absolute left-4 md:left-1/2 top-0 h-full w-0.5 bg-blue-200 dark:bg-slate-700 -translate-x-1/2"></div>
+        
+        <div className="relative max-w-4xl mx-auto" ref={containerRef}>
+          {/* Background Track line */}
+          <div className="absolute left-4 md:left-1/2 top-4 bottom-0 w-[4px] -translate-x-1/2 bg-slate-800 rounded-full overflow-hidden">
+            {/* Glowing active line bound to scroll progress */}
+            <motion.div 
+               className="w-full absolute top-0 bg-gradient-to-b from-blue-400 to-indigo-600 shadow-[0_0_15px_rgba(59,130,246,1)] origin-top rounded-full"
+               style={{
+                  height: useTransform(smoothProgress, [0, 1], ["0%", "100%"]),
+               }}
+            />
+          </div>
 
-          <div className="space-y-16">
+          <div className="space-y-12">
             {sortedData.map((event, index) => (
               <TimelineItem key={index} event={event} index={index} onReadMore={handleReadMore} />
             ))}
           </div>
         </div>
+        
         {modalOpen && selectedEvent && <TimelineModal event={selectedEvent} onClose={handleCloseModal} />}
       </div>
     </section>
