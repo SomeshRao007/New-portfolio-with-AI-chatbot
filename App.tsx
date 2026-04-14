@@ -9,6 +9,9 @@ import { WebGLShader } from "./components/ui/web-gl-shader";
 import { LiquidButton } from './components/ui/liquid-glass-button';
 import { SpeedInsights } from "@vercel/speed-insights/react"
 import { Analytics } from "@vercel/analytics/react"
+import { CustomCursor } from './components/CustomCursor';
+import { ParticleNetwork } from './components/ParticleNetwork';
+import { AnimatedSection } from './components/AnimatedSection';
 
 // Lazy-loaded below-fold components for better initial load performance
 const Skills = lazy(() => import('./components/Skills'));
@@ -64,49 +67,53 @@ const App: React.FC = () => {
 
   return (
     <ThemeProvider>
+      <CustomCursor />
+      <ParticleNetwork />
       <div className="min-h-screen flex flex-col font-sans animate-in fade-in duration-1000">
         <Header name={portfolioData.personalInfo.name} />
         <main className="flex-grow container mx-auto px-4 md:px-8 py-8">
-          <div id="home" className="pt-20 -mt-20">
+          <AnimatedSection id="home" className="pt-20 -mt-20">
             <Hero data={portfolioData.personalInfo} />
-          </div>
+          </AnimatedSection>
           <Suspense fallback={<SectionFallback />}>
-            <Stats data={portfolioData.stats} />
+            <AnimatedSection delay={0.2}>
+              <Stats data={portfolioData.stats} />
+            </AnimatedSection>
           </Suspense>
           <Suspense fallback={<SectionFallback />}>
-            <div id="skills" className="pt-20 -mt-20">
+            <AnimatedSection id="skills" className="pt-20 -mt-20">
               <Skills data={portfolioData.skills} />
-            </div>
+            </AnimatedSection>
           </Suspense>
           <Suspense fallback={<SectionFallback />}>
-            <div id="timeline" className="pt-20 -mt-20">
+            <AnimatedSection id="timeline" className="pt-20 -mt-20">
               <Timeline data={portfolioData.timeline} />
-            </div>
+            </AnimatedSection>
           </Suspense>
           <Suspense fallback={<SectionFallback />}>
-            <div id="projects" className="pt-20 -mt-20">
+            <AnimatedSection id="projects" className="pt-20 -mt-20">
               <Projects data={portfolioData.projects} />
-            </div>
+            </AnimatedSection>
           </Suspense>
           <Suspense fallback={<SectionFallback />}>
-            <div id="certifications" className="pt-20 -mt-20">
+            <AnimatedSection id="certifications" className="pt-20 -mt-20">
               <Certifications data={portfolioData.certifications} />
-            </div>
+            </AnimatedSection>
           </Suspense>
           <Suspense fallback={<SectionFallback />}>
-            <div id="testimonials" className="pt-20 -mt-20">
+            <AnimatedSection id="testimonials" className="pt-20 -mt-20">
               <Testimonials data={portfolioData.testimonials} />
-            </div>
+            </AnimatedSection>
           </Suspense>
           <Suspense fallback={<SectionFallback />}>
-            <div id="learning" className="pt-20 -mt-20">
+            <AnimatedSection id="learning" className="pt-20 -mt-20">
               <LearningList data={portfolioData.learning} />
-            </div>
+            </AnimatedSection>
           </Suspense>
           <Suspense fallback={<SectionFallback />}>
-            <div id="contact" className="pt-20 -mt-20">
+            <AnimatedSection id="contact" className="pt-20 -mt-20">
               <Contact formspreeEndpoint={portfolioData.personalInfo.formspreeEndpoint} />
-            </div>
+            </AnimatedSection>
           </Suspense>
         </main>
         <Footer name={portfolioData.personalInfo.name} />
