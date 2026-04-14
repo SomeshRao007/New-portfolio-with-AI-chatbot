@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { GoogleGenAI, LiveServerMessage, Modality, Blob } from '@google/genai';
 import type { ChatMessage } from '../types';
 import { MicrophoneIcon, XMarkIcon, ChatBubbleOvalLeftEllipsisIcon, PaperAirplaneIcon } from '@heroicons/react/24/solid';
+import { OrbVisualizer } from './OrbVisualizer';
 
 const RATE_LIMIT_WINDOW = 60 * 1000; // 1 minute in milliseconds
 const MAX_REQUESTS = 5; // Max requests per window
@@ -96,6 +97,9 @@ const Chatbot: React.FC<ChatbotProps> = ({ systemInstruction }) => {
   const nextStartTimeRef = useRef(0);
   const audioSourcesRef = useRef<Set<AudioBufferSourceNode>>(new Set());
   
+  const analyserRef = useRef<AnalyserNode | null>(null);
+  const [activeAnalyser, setActiveAnalyser] = useState<AnalyserNode | null>(null);
+  
   const currentInputTranscriptionRef = useRef('');
   const currentOutputTranscriptionRef = useRef('');
 
@@ -129,6 +133,12 @@ const Chatbot: React.FC<ChatbotProps> = ({ systemInstruction }) => {
         await outputAudioContextRef.current.close();
         outputAudioContextRef.current = null;
     }
+    
+    if (analyserRef.current) {
+        analyserRef.current.disconnect();
+        analyserRef.current = null;
+    }
+    setActiveAnalyser(null);
     
     setIsLive(false);
     setStatus('Idle. Press the mic to start.');
@@ -226,11 +236,19 @@ const Chatbot: React.FC<ChatbotProps> = ({ systemInstruction }) => {
             const base64Audio = message.serverContent?.modelTurn?.parts[0]?.inlineData?.data;
             if (base64Audio && outputAudioContextRef.current) {
                 const ctx = outputAudioContextRef.current;
+                
+                if (!analyserRef.current) {
+                    analyserRef.current = ctx.createAnalyser();
+                    analyserRef.current.fftSize = 256;
+                    analyserRef.current.connect(ctx.destination);
+                    setActiveAnalyser(analyserRef.current);
+                }
+
                 nextStartTimeRef.current = Math.max(nextStartTimeRef.current, ctx.currentTime);
                 const audioBuffer = await decodeAudioData(decode(base64Audio), ctx, 24000, 1);
                 const source = ctx.createBufferSource();
                 source.buffer = audioBuffer;
-                source.connect(ctx.destination);
+                source.connect(analyserRef.current);
                 source.addEventListener('ended', () => audioSourcesRef.current.delete(source));
                 source.start(nextStartTimeRef.current);
                 nextStartTimeRef.current += audioBuffer.duration;
@@ -368,6 +386,8 @@ const Chatbot: React.FC<ChatbotProps> = ({ systemInstruction }) => {
               </div>
             ))}
           </div>
+
+          <OrbVisualizer analyser={activeAnalyser} isLive={isLive} />
 
           <div className="p-4 border-t border-slate-200 dark:border-slate-700">
              <p className="text-center text-sm text-slate-500 dark:text-slate-400 mb-2 h-4">{getStatusText()}</p>
