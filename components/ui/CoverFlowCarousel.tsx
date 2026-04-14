@@ -38,8 +38,8 @@ export default function CoverFlowCarousel({
         
         {/* Header */}
         <div className="text-center mb-16">
-          <p className="text-sm text-blue-500 font-bold tracking-widest uppercase mb-2">&gt; HIGHLIGHTS</p>
-          <h2 className="text-3xl md:text-5xl font-extrabold text-slate-50 drop-shadow-lg">{heading}</h2>
+          <p className="text-sm text-blue-600 dark:text-blue-500 font-bold tracking-widest uppercase mb-2">&gt; HIGHLIGHTS</p>
+          <h2 className="text-3xl md:text-5xl font-extrabold text-slate-900 dark:text-slate-50 drop-shadow-lg">{heading}</h2>
         </div>
 
         {/* 3D Carousel Container */}

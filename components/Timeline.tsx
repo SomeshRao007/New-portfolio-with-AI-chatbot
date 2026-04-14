@@ -125,9 +125,9 @@ const Timeline: React.FC<TimelineProps> = ({ data }) => {
     <section className="py-20 md:py-24 bg-transparent relative z-10 pointer-events-auto">
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
-          <p className="text-sm text-blue-500 font-bold tracking-widest uppercase mb-2">&gt; SELECT_PATHWAY</p>
-          <h2 className="text-3xl md:text-5xl font-extrabold text-slate-50 drop-shadow-lg">Skill Tree</h2>
-          <p className="mt-4 text-lg text-slate-400">Scroll to unlock experiential milestones.</p>
+          <p className="text-sm text-blue-600 dark:text-blue-500 font-bold tracking-widest uppercase mb-2">&gt; SELECT_PATHWAY</p>
+          <h2 className="text-3xl md:text-5xl font-extrabold text-slate-900 dark:text-slate-50 drop-shadow-lg">My Journey</h2>
+          <p className="mt-4 text-lg text-slate-600 dark:text-slate-400">Scroll to unlock experiential milestones.</p>
         </div>
         
         <div className="relative max-w-4xl mx-auto" ref={containerRef}>
