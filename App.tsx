@@ -1,12 +1,11 @@
 
-import React, { Suspense, lazy, useMemo, useState } from 'react';
+import React, { Suspense, lazy, useEffect, useMemo, useState } from 'react';
+import { motion } from 'framer-motion';
 import Header from './components/Header';
 import Hero from './components/Hero';
 import Footer from './components/Footer';
 import { INITIAL_DATA, createChatbotSystemInstruction } from './constants';
 import { ThemeProvider } from './hooks/useTheme';
-import { WebGLShader } from "./components/ui/web-gl-shader";
-import { LiquidButton } from './components/ui/liquid-glass-button';
 import { SpeedInsights } from "@vercel/speed-insights/react"
 import { Analytics } from "@vercel/analytics/react"
 import BlueprintGrid from './components/BlueprintGrid';
@@ -29,27 +28,74 @@ const SectionFallback = () => (
   </div>
 );
 
+const BOOT_LINES: [string, string, boolean][] = [
+  // [dmesg timestamp, message, shows OK]
+  ['0.000000', 'SomeshOS v2.4.1 (build: cloud-native) booting...', false],
+  ['0.041627', 'Loading kernel modules: aws k8s docker terraform ansible', true],
+  ['0.183210', 'Mounting /dev/career (8 milestones, journaled)', true],
+  ['0.284551', 'Starting container runtime: 3,000 servers migrated', true],
+  ['0.395117', 'Optimizing ci/cd pipelines: build time -40%', true],
+  ['0.446902', 'Decrypting endorsements from allied networks', true],
+  ['0.517263', 'Arming AI subsystems: agentic workflows online', true],
+  ['0.598884', 'Starting somesh-portfolio.service', true],
+  ['0.612001', 'Boot complete. Uptime target: 99.99%', false],
+];
+
 const IntroScreen: React.FC<{ onEnter: () => void }> = ({ onEnter }) => {
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  return (
-    <div className="relative flex w-full h-screen flex-col items-center justify-center overflow-hidden bg-black">
-      {!reducedMotion && <WebGLShader/>}
-      <div className="relative z-10 p-2 w-full mx-auto max-w-3xl">
-        <main className="relative border border-white/20 bg-transparent backdrop-blur-md py-10 overflow-hidden rounded-xl shadow-2xl">
-            <h1 className="mb-3 text-white text-center text-7xl font-extrabold tracking-tighter md:text-[clamp(2rem,8vw,7rem)]">Somesh Rao Coka</h1>
-            <p className="text-white/60 px-6 text-center text-xs md:text-sm lg:text-lg">Speed Security Stability - DevOps Done Right!</p>
-            <div className="my-8 flex items-center justify-center gap-1">
-                <span className="relative flex h-3 w-3 items-center justify-center">
-                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-500 opacity-75"></span>
-                    <span className="relative inline-flex h-2 w-2 rounded-full bg-green-500"></span>
-                </span>
-                <p className="text-xs text-green-500">Available for New Projects</p>
-            </div>
+  const [lineCount, setLineCount] = useState(reducedMotion ? BOOT_LINES.length : 0);
+  const booted = lineCount >= BOOT_LINES.length;
 
-            <div className="flex justify-center pb-6">
-                <LiquidButton className="text-white border border-white/30 rounded-full font-bold tracking-wide" size={'xl'} onClick={onEnter}>Let's Go</LiquidButton>
+  useEffect(() => {
+    if (booted) return;
+    const t = setTimeout(() => setLineCount((c) => c + 1), lineCount === 0 ? 350 : 150);
+    return () => clearTimeout(t);
+  }, [lineCount, booted]);
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Enter') onEnter(); };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [onEnter]);
+
+  return (
+    <div className="flex w-full min-h-screen flex-col items-center justify-center bg-[#05070a] px-4 py-10">
+      <div className="w-full max-w-2xl font-mono text-[13px] sm:text-sm leading-relaxed">
+        {BOOT_LINES.slice(0, lineCount).map(([time, text, ok], i) => (
+          <p key={i} className="flex items-baseline gap-2 text-slate-400">
+            <span className="text-slate-600 shrink-0">[{time.padStart(8, ' ')}]</span>
+            <span>{text}</span>
+            {ok && <span className="ml-auto shrink-0 text-green-500">[ OK ]</span>}
+          </p>
+        ))}
+        {!booted && <p className="text-slate-400 animate-pulse">▊</p>}
+
+        {booted && (
+          <motion.div
+            initial={reducedMotion ? false : { opacity: 0, y: 12, filter: 'blur(8px)' }}
+            animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+            transition={{ duration: 0.7, ease: 'easeOut' }}
+            className="mt-8 border-t border-slate-800 pt-8"
+          >
+            <p className="text-slate-600 text-xs mb-3">Welcome to SomeshOS — message of the day:</p>
+            <h1 className="text-white text-4xl sm:text-6xl md:text-7xl font-extrabold tracking-tighter font-sans">Somesh Rao Coka</h1>
+            <p className="mt-3 text-slate-500">Speed · Security · Stability — DevOps done right.</p>
+            <div className="mt-4 flex items-center gap-2">
+              <span className="relative flex h-3 w-3 items-center justify-center">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-500 opacity-75"></span>
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-green-500"></span>
+              </span>
+              <p className="text-xs text-green-500">Available for New Projects</p>
             </div>
-        </main>
+            <button
+              onClick={onEnter}
+              className="mt-8 inline-flex items-center gap-3 rounded border border-slate-700 px-5 py-3 text-slate-200 transition-colors hover:border-green-500 hover:text-green-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-green-500"
+            >
+              <span className="text-green-500">$</span> ./enter --portfolio
+              <kbd className="rounded border border-slate-700 px-1.5 py-0.5 text-[10px] text-slate-500">ENTER</kbd>
+            </button>
+          </motion.div>
+        )}
       </div>
     </div>
   );

@@ -105,7 +105,7 @@ const Testimonials: React.FC<TestimonialsProps> = ({ data }) => {
     <section className="py-20 md:py-24 bg-transparent relative z-10 pointer-events-auto">
       <div className="container mx-auto px-4 max-w-4xl">
         <div className="text-center mb-16">
-          <p className="text-sm text-blue-500 font-bold tracking-widest uppercase mb-2">&gt; DECRYPTING_TRANSMISSIONS</p>
+          <p className="text-sm text-blue-500 font-mono font-bold mb-2">$ tail -f /var/log/endorsements</p>
           <h2 className="text-3xl md:text-5xl font-extrabold text-slate-900 dark:text-slate-50 drop-shadow-lg leading-tight">
             Encrypted Logs
           </h2>

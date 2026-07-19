@@ -38,7 +38,7 @@ export default function CoverFlowCarousel({
         
         {/* Header */}
         <div className="text-center mb-16">
-          <p className="text-sm text-blue-600 dark:text-blue-500 font-bold tracking-widest uppercase mb-2">&gt; HIGHLIGHTS</p>
+          <p className="text-sm text-blue-600 dark:text-blue-500 font-mono font-bold mb-2">$ docker ps --filter status=shipped</p>
           <h2 className="text-3xl md:text-5xl font-extrabold text-slate-900 dark:text-slate-50 drop-shadow-lg">{heading}</h2>
         </div>
 
@@ -50,9 +50,14 @@ export default function CoverFlowCarousel({
               const isCenter = offset === 0;
 
               return (
-                <motion.div
+                <motion.a
                   key={item.id}
-                  className={`absolute w-[280px] sm:w-[350px] h-[350px] cursor-pointer rounded-2xl overflow-hidden shadow-2xl group border border-slate-700/50 bg-slate-900`}
+                  href={item.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`${item.title} — ${item.summary}`}
+                  onFocus={() => setCurrentIndex(i)}
+                  className={`absolute block w-[280px] sm:w-[350px] h-[350px] cursor-pointer rounded-2xl overflow-hidden shadow-2xl group border border-slate-700/50 bg-slate-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-500`}
                   initial={{ opacity: 0, x: offset * cardOffset, scale: 0.8 }}
                   animate={{
                     opacity: Math.abs(offset) > 2 ? 0 : 1,
@@ -63,10 +68,9 @@ export default function CoverFlowCarousel({
                     filter: isCenter ? "blur(0px) brightness(1)" : "blur(4px) brightness(0.5)"
                   }}
                   transition={{ duration: 0.6, type: "spring", bounce: 0.15 }}
-                  onClick={() => {
-                    if (isCenter) {
-                      window.open(item.url, '_blank');
-                    } else {
+                  onClick={(e) => {
+                    if (!isCenter) {
+                      e.preventDefault();
                       setCurrentIndex(i);
                     }
                   }}
@@ -95,7 +99,7 @@ export default function CoverFlowCarousel({
                     <h3 className="text-xl font-bold text-white drop-shadow-md">{item.title}</h3>
                   </div>
 
-                </motion.div>
+                </motion.a>
               );
             })}
           </AnimatePresence>
