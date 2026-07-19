@@ -9,7 +9,6 @@ import { WebGLShader } from "./components/ui/web-gl-shader";
 import { LiquidButton } from './components/ui/liquid-glass-button';
 import { SpeedInsights } from "@vercel/speed-insights/react"
 import { Analytics } from "@vercel/analytics/react"
-import { CustomCursor } from './components/CustomCursor';
 import BlueprintGrid from './components/BlueprintGrid';
 import { AnimatedSection } from './components/AnimatedSection';
 
@@ -67,7 +66,6 @@ const App: React.FC = () => {
 
   return (
     <ThemeProvider>
-      <CustomCursor />
       <BlueprintGrid />
       <div className="min-h-screen flex flex-col font-sans animate-in fade-in duration-1000">
         <Header name={portfolioData.personalInfo.name} />

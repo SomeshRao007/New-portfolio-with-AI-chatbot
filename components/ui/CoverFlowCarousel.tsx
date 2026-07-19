@@ -17,7 +17,7 @@ export default function CoverFlowCarousel({
   heading?: string;
   items: GalleryItem[];
 }) {
-  const [currentIndex, setCurrentIndex] = useState(Math.floor(items.length / 2));
+  const [currentIndex, setCurrentIndex] = useState(0);
   const [cardOffset, setCardOffset] = useState(250);
 
   useEffect(() => {
