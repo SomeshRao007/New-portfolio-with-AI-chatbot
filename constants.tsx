@@ -31,7 +31,7 @@ const SKILLS_DATA: SkillCategory[] = [
     {
         name: 'DevOps',
         skills: [
-            { name: 'Identity and Access Managment', icon: '/images/skills/aws-iam-svgrepo-com.png' },
+            { name: 'Identity and Access Management', icon: '/images/skills/aws-iam-svgrepo-com.png' },
             { name: 'Kubernetes', icon: '/images/skills/kubernetes.png' },
             { name: 'Docker', icon: '/images/skills/docker.png' },
             { name: 'Terraform', icon: '/images/skills/terraform.png' },
@@ -148,15 +148,15 @@ const TIMELINE_DATA: TimelineEvent[] = [
   {
     date: '2023-11-01',
     title: 'International DSAI Conference',
-    description: 'Presented my Masters Reseach work at International Conference on Data Science & Artificial Intelligence...',
-    fullDescription: 'Presented my Masters Reseach work at International Conference on Data Science & Artificial Intelligence held at Berkeley Hotel Pratunam, Bangkok, Thailand from 27 to 29 of November 2023',
+    description: 'Presented my Masters Research work at International Conference on Data Science & Artificial Intelligence...',
+    fullDescription: 'Presented my Masters Research work at International Conference on Data Science & Artificial Intelligence held at Berkeley Hotel Pratunam, Bangkok, Thailand from 27 to 29 of November 2023',
     icon: 'education',
   },
   {
     date: '2023-08-01',
     title: 'Teaching Assistant for Fullstack Application Development',
     description: 'Designed and implemented course structure for Full Stack Application Development course for Masters students...',
-    fullDescription: 'Designed and implemented course structure for Full Stack Application Development course for Masters students. Gave Lectures 6-9 hrs per week on relavent topics such as Web Development & Database Managment. Lead lab sessions, elevating student understanding and engagement in the course.',
+    fullDescription: 'Designed and implemented course structure for Full Stack Application Development course for Masters students. Gave Lectures 6-9 hrs per week on relevant topics such as Web Development & Database Management. Lead lab sessions, elevating student understanding and engagement in the course.',
     icon: 'work',
   },
   {
@@ -192,7 +192,7 @@ const TIMELINE_DATA: TimelineEvent[] = [
 const LEARNING_DATA: LearningItem[] = [
     { title: 'Agentic AI Systems', description: 'Exploring feedback based autonomous agents for complex problem-solving.' },
     { title: 'AI Automation with N8N', description: 'Learning how to build powerful workflows (such as integrating excel) and automating tasks with AI.' },
-    { title: 'Distilling 8B AI Models', description: 'Teaching small parameter models from a higher paramter models.' },
+    { title: 'Distilling 8B AI Models', description: 'Teaching small parameter models from a higher parameter model.' },
     { title: 'Advanced CI Pipelines for agentic AI systems', description: 'Implementing intelligent and automated deployment strategies.' },
     { title: 'Serverless Deployments strategies', description: 'Learning how to scale in cost-effective manner in cloud agnostic architectures.' },
     { title: 'Cloud Native Security', description: 'How to Secure modern applications and infrastructure in the cloud.' },
@@ -200,7 +200,7 @@ const LEARNING_DATA: LearningItem[] = [
 
 const STATS_DATA = [
     { label: 'Cups of Coffee', value: 472 },
-    { label: 'Projects', value: 23 },
+    { label: 'Projects', value: 14 },
     { label: 'Events', value: 6 },
     { label: 'Lines of Code', value: 55070 },
 ];
@@ -214,7 +214,7 @@ const PROJECTS_DATA: Project[] = [
   },
   {
     title: 'NBS OS',
-    description: 'An AI OS agent for model finetuning and desktop automation.',
+    description: 'A finetuned AI model into an OS agent for desktop automation.',
     imageUrl: '/images/nbs-os-base.png',
     githubUrl: 'https://github.com/SomeshRao007/NBS_OS.git',
   },
@@ -232,13 +232,13 @@ const PROJECTS_DATA: Project[] = [
   },
   {
     title: 'Odoo Module Automation Pipeline',
-    description: 'Just update your code and with a single git push get your odoo modules with in multiple servers updated',
+    description: 'Just update your code and with a single git push get your odoo modules within multiple servers updated',
     imageUrl: '/images/Odoo-Module-Automation.png',
     githubUrl: 'https://github.com/SomeshRao007/Odoo_Module_Automation_Pipeline.git',
   },
   {
     title: 'Multimodal Agentic AI system (coding)',
-    description: 'Multiple agents coomunicates with each other to solve a single problem efficiently.',
+    description: 'Multiple agents communicate with each other to solve a single problem efficiently.',
     imageUrl: '/images/multi-modal-ai.png',
     githubUrl: 'https://github.com/SomeshRao007/Multi-Model-AI-System.git',
   },
@@ -249,7 +249,7 @@ const PROJECTS_DATA: Project[] = [
     githubUrl: 'https://github.com/SomeshRao007/SSL-Certificates-Migration.git',
   },
   {
-    title: 'PROACTIVE AUTOSCALING STRATEGY',
+    title: 'Proactive Autoscaling Strategy',
     description: 'A Transformers Based Model',
     imageUrl: '/images/cloud system.png',
     githubUrl: 'https://github.com/SomeshRao007/PROACTIVE-AUTOSCALING-FOR-HIGH-WEB-TRAFFIC-ENVIRONMENTS-A-TRANSFORMERS-BASED-APPROACH.git',

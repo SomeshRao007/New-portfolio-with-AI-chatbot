@@ -32,9 +32,9 @@ const BlurInText = ({ text, className }: { text: string; className?: string }) =
               transition: { duration: 1, ease: "easeOut" } 
             }
           }}
-          className="inline-block mr-1.5"
+          className="inline-block whitespace-pre"
         >
-          {word}
+          {word + ' '}
         </motion.span>
       ))}
     </motion.div>
@@ -130,7 +130,7 @@ const Hero: React.FC<HeroProps> = ({ data }) => {
           titleComponent={
             <>
               <h1 className="text-l font-semibold text-black dark:text-white">
-                What I Do ?<br />
+                What I Do?<br />
                 <span className="text-xl md:text-[4rem] font-bold mt-1 leading-none">
                   <Typewriter 
                     words={cycleWords} 

@@ -73,7 +73,7 @@ export default function CoverFlowCarousel({
                 >
                   {/* Image Background */}
                   {item.image ? (
-                    <img src={item.image} alt={item.title} className="w-full h-full object-cover transition-all duration-700" />
+                    <img src={item.image} alt={item.title} className={`w-full h-full transition-all duration-700 ${item.image.endsWith('.svg') ? 'object-contain p-12 bg-slate-900' : 'object-cover'}`} />
                   ) : (
                     <div className="w-full h-full bg-slate-800 flex items-center justify-center text-slate-500 border border-slate-700">No Image</div>
                   )}

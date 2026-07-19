@@ -30,9 +30,10 @@ const SectionFallback = () => (
 );
 
 const IntroScreen: React.FC<{ onEnter: () => void }> = ({ onEnter }) => {
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   return (
     <div className="relative flex w-full h-screen flex-col items-center justify-center overflow-hidden bg-black">
-      <WebGLShader/>
+      {!reducedMotion && <WebGLShader/>}
       <div className="relative z-10 p-2 w-full mx-auto max-w-3xl">
         <main className="relative border border-white/20 bg-transparent backdrop-blur-md py-10 overflow-hidden rounded-xl shadow-2xl">
             <h1 className="mb-3 text-white text-center text-7xl font-extrabold tracking-tighter md:text-[clamp(2rem,8vw,7rem)]">Somesh Rao Coka</h1>
@@ -55,13 +56,13 @@ const IntroScreen: React.FC<{ onEnter: () => void }> = ({ onEnter }) => {
 };
 
 const App: React.FC = () => {
-  const [showIntro, setShowIntro] = useState(true);
+  const [showIntro, setShowIntro] = useState(() => sessionStorage.getItem('introSeen') !== '1');
   const portfolioData = INITIAL_DATA;
 
   const chatbotInstruction = useMemo(() => createChatbotSystemInstruction(portfolioData), [portfolioData]);
 
   if (showIntro) {
-    return <IntroScreen onEnter={() => setShowIntro(false)} />;
+    return <IntroScreen onEnter={() => { sessionStorage.setItem('introSeen', '1'); setShowIntro(false); }} />;
   }
 
   return (

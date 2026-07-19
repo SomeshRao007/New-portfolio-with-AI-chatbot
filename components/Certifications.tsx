@@ -8,6 +8,7 @@ type CertificationsProps = {
 
 const BadgeCard: React.FC<{ cert: Certification; index: number }> = ({ cert, index }) => {
   const [isFlipped, setIsFlipped] = useState(false);
+  const inProgress = cert.title.toLowerCase().includes('preparing');
 
   return (
     <div 
@@ -62,7 +63,7 @@ const BadgeCard: React.FC<{ cert: Certification; index: number }> = ({ cert, ind
           style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}
         >
            <div className="w-full border-b-4 border-black mb-4"></div>
-           <p className="text-slate-500 font-mono text-xs uppercase mb-2 block">Authorization Verified</p>
+           <p className={`font-mono text-xs uppercase mb-2 block ${inProgress ? 'text-amber-600' : 'text-slate-500'}`}>{inProgress ? 'Certification In Progress' : 'Authorization Verified'}</p>
            <h3 className="text-slate-900 font-bold text-lg mb-6">{cert.title}</h3>
            
            {/* Mock Barcode */}
