@@ -13,7 +13,7 @@ const PERSONAL_INFO = {
     { name: 'Instagram', url: 'https://www.instagram.com/somesh_rao_07/', icon: '/images/social/instagram-1-svgrepo-com-min.png' },
   ],
   formspreeEndpoint: "https://formspree.io/f/xleqeywr",
-  cvUrl: "https://drive.google.com/file/d/1E_IQDmlaig8ZolNYRQwpsUzPu0988ZkO/view?usp=sharing",
+  cvUrl: "https://drive.google.com/file/d/1PMCrMbmIlGmTf56hb04H4PXSRCX7I0FK/view?usp=sharing",
 };
 
 const SKILLS_DATA: SkillCategory[] = [
