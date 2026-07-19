@@ -29,64 +29,99 @@ const SKILLS_DATA: SkillCategory[] = [
         ]
     },
     {
-        name: 'DevOps',
+        name: 'DevOps & CI/CD',
         skills: [
-            { name: 'Identity and Access Management', icon: '/images/skills/aws-iam-svgrepo-com.png' },
             { name: 'Kubernetes', icon: '/images/skills/kubernetes.png' },
+            { name: 'KEDA', icon: '/images/skills/keda.svg' },
             { name: 'Docker', icon: '/images/skills/docker.png' },
+            { name: 'Docker Compose', icon: '/images/skills/docker.png' },
             { name: 'Terraform', icon: '/images/skills/terraform.png' },
-            { name: 'Argo CD & Rollouts', icon: '/images/skills/Argo CD.png' },
+            { name: 'Ansible', icon: '/images/skills/ansible-svgrepo-com.png' },
             { name: 'Jenkins', icon: '/images/skills/jenkins-svgrepo-com.png' },
-            { name: 'Tomcat', icon: '/images/skills/tomcat-svgrepo-com.png' },
+            { name: 'GitHub Actions', icon: '/images/skills/github-actions.svg' },
+            { name: 'Argo CD & Rollouts', icon: '/images/skills/Argo CD.png' },
+            { name: 'Packer', icon: '/images/skills/packer.svg' },
             { name: 'SonarQube', icon: '/images/skills/sonarqube-svgrepo-com.png' },
             { name: 'Maven', icon: '/images/skills/maven-svgrepo-com.png' },
+            { name: 'Tomcat', icon: '/images/skills/tomcat-svgrepo-com.png' },
+            { name: 'Jira', icon: '/images/skills/jira.svg' },
+        ]
+    },
+    {
+        name: 'Servers & Networking',
+        skills: [
+            { name: 'Nginx', icon: '/images/skills/nginx.svg' },
+            { name: 'Traefik', icon: '/images/skills/traefik.svg' },
+            { name: 'Certbot', icon: '/images/skills/certbot.svg' },
+            { name: 'OAuth2 Proxy (OIDC)', icon: '/images/skills/oauth2-proxy.svg' },
             { name: 'Linux', icon: '/images/skills/linux.png' },
             { name: 'Windows Server', icon: '/images/skills/Windows 11.png' },
-            { name: 'Bash Scripts', icon: '/images/skills/bash.png' },
             { name: 'Remote Desktop Protocol', icon: '/images/skills/microsoft-remote-desktop-svgrepo-com.png' }
         ]
     },
     {
-        name: 'Monitoring',
+        name: 'Monitoring & Observability',
         skills: [
             { name: 'Prometheus', icon: '/images/skills/prometheus-svgrepo-com.png' },
-            { name: 'Grafana Dashboard', icon: '/images/skills/monitoring.png' },
+            { name: 'Grafana', icon: '/images/skills/monitoring.png' },
             { name: 'SigNoz', icon: '/images/skills/signoz.png' },
-            { name: 'DataDog', icon: '/images/skills/datadog-svgrepo-com.png' }
+            { name: 'New Relic', icon: '/images/skills/newrelic.svg' },
+            { name: 'DataDog', icon: '/images/skills/datadog-svgrepo-com.png' },
+            { name: 'FluentBit', icon: '/images/skills/fluentbit.svg' }
         ]
     },
     {
-        name: 'AI/ML',
+        name: 'Languages & Frameworks',
         skills: [
-            { name: 'Deep Learning', icon: '/images/skills/deep_learning.png' },
-            { name: 'Langchain', icon: '/images/skills/langchain.png' },
-            { name: 'Crew AI', icon: '/images/skills/CrewAI.png' },
-            { name: 'Agentic AI systems', icon: '/images/skills/agentic_ai.png' },
-            { name: 'N8N Automation', icon: '/images/skills/n8n-logo.png' }
-        ]
-    },
-    {
-        name: 'Web Development',
-        skills: [
+            { name: 'Python', icon: '/images/skills/python.png' },
+            { name: 'TypeScript', icon: '/images/skills/typescript.svg' },
+            { name: 'JavaScript', icon: '/images/skills/javascript.png' },
+            { name: 'Java', icon: '/images/skills/java.svg' },
+            { name: 'C', icon: '/images/skills/c-lang.svg' },
+            { name: 'Go', icon: '/images/skills/go.svg' },
+            { name: 'Rust', icon: '/images/skills/rust.svg' },
+            { name: 'Bash', icon: '/images/skills/bash.png' },
             { name: 'PHP', icon: '/images/skills/php.png' },
             { name: 'Symfony', icon: '/images/skills/symfony-svgrepo-com.png' },
             { name: 'Ruby on Rails', icon: '/images/skills/rails.png' },
+            { name: 'React', icon: '/images/skills/react.svg' },
+            { name: 'Odoo dev', icon: '/images/skills/odoo.png' },
             { name: 'HTML', icon: '/images/skills/html-5-svgrepo-com.png' },
             { name: 'CSS', icon: '/images/skills/css-svgrepo-com.png' },
-            { name: 'Javascript flavours', icon: '/images/skills/javascript.png' },
-            { name: 'Odoo dev', icon: '/images/skills/odoo.png' },
-            { name: 'Stripe Payments', icon: '/images/skills/stripe-svgrepo-com.png' }
+            { name: 'YAML', icon: '/images/skills/file-yaml-svgrepo-com.png' },
+            { name: 'Stripe Payments', icon: '/images/skills/stripe-svgrepo-com.png' },
+            { name: 'Android', icon: '/images/skills/android.png' },
+            { name: 'Matlab', icon: '/images/skills/matlab.png' }
         ]
     },
     {
-        name: 'Programming & Databases',
+        name: 'Databases',
         skills: [
-            { name: 'Python', icon: '/images/skills/python.png' },
-            { name: 'YAML', icon: '/images/skills/file-yaml-svgrepo-com.png' },
-            { name: 'PSQL', icon: '/images/skills/postgresql-svgrepo-com.png' },
+            { name: 'PostgreSQL', icon: '/images/skills/postgresql-svgrepo-com.png' },
+            { name: 'MongoDB', icon: '/images/skills/mongodb.svg' },
             { name: 'Firebase', icon: '/images/skills/firebase-svgrepo-com.png' },
-            { name: 'Android', icon: '/images/skills/android.png' },
-            { name: 'Matlab', icon: '/images/skills/matlab.png' }
+            { name: 'Strapi', icon: '/images/skills/strapi.svg' }
+        ]
+    },
+    {
+        name: 'AI / ML',
+        skills: [
+            { name: 'Deep Learning', icon: '/images/skills/deep_learning.png' },
+            { name: 'PyTorch', icon: '/images/skills/pytorch.svg' },
+            { name: 'Hugging Face', icon: '/images/skills/huggingface.svg' },
+            { name: 'LangChain', icon: '/images/skills/langchain.png' },
+            { name: 'CrewAI', icon: '/images/skills/CrewAI.png' },
+            { name: 'Ollama', icon: '/images/skills/ollama.svg' },
+            { name: 'N8N Automation', icon: '/images/skills/n8n-logo.png' },
+            { name: 'Agentic AI systems', icon: '/images/skills/agentic_ai.png' },
+            { name: 'Agent Harness', icon: '/images/skills/harness.png' },
+            { name: 'RAG', icon: '/images/skills/rag.jpeg' },
+            { name: 'FAISS', icon: '/images/skills/FAISS.jpeg' },
+            { name: 'QLoRA', icon: '/images/skills/QLoRA.jpeg' },
+            { name: 'Finetuning', icon: '/images/skills/Finetuning.png' },
+            { name: 'Transformers', icon: '/images/skills/Transformers.png' },
+            { name: 'ARIMA', icon: '/images/skills/arima.png' },
+            { name: 'Random Forest', icon: '/images/skills/RandomForest.jpg' }
         ]
     }
 ];
@@ -199,10 +234,10 @@ const LEARNING_DATA: LearningItem[] = [
 ];
 
 const STATS_DATA = [
-    { label: 'Cups of Coffee', value: 472 },
-    { label: 'Projects', value: 14 },
-    { label: 'Events', value: 6 },
-    { label: 'Lines of Code', value: 55070 },
+    { label: 'Servers Migrated', value: 3000, suffix: '+' },
+    { label: 'Build Time Cut', value: 40, suffix: '%' },
+    { label: 'Uptime Maintained', value: 99.99, suffix: '%', decimals: 2 },
+    { label: 'Projects Shipped', value: 14 },
 ];
 
 const PROJECTS_DATA: Project[] = [

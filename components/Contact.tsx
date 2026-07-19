@@ -108,7 +108,7 @@ const Contact: React.FC<ContactProps> = ({ formspreeEndpoint }) => {
         {/* Header section */}
         <div className="mb-12 flex flex-col md:flex-row md:items-end justify-between">
             <div className="max-w-2xl">
-              <p className="text-sm text-blue-600 dark:text-blue-500 font-bold tracking-widest uppercase mb-2">&gt; /ROOT/CONTACT</p>
+              <p className="text-sm text-blue-600 dark:text-blue-500 font-mono font-bold mb-2">$ ssh guest@somesh --request-handshake</p>
               <h2 className="text-4xl md:text-5xl font-extrabold text-slate-900 dark:text-slate-50 drop-shadow-lg leading-tight mb-4">
                 Initiate Handshake.
               </h2>

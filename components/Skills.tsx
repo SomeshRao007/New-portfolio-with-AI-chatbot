@@ -12,7 +12,7 @@ const Skills: React.FC<SkillsProps> = ({ data }) => {
       <div className="container mx-auto px-4">
         {/* Header */}
         <div className="text-center mb-10">
-            <p className="text-sm text-blue-600 dark:text-blue-400 font-semibold mb-2">&gt; ./execute --tech-stack</p>
+            <p className="text-sm text-blue-600 dark:text-blue-400 font-mono font-semibold mb-2">$ ls /usr/bin/skills</p>
             <h2 className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-slate-50">Technical Interface</h2>
             <p className="mt-4 text-lg text-slate-600 dark:text-slate-400">
               Type 'skills' in the terminal below to interface with the core logic.

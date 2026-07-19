@@ -55,6 +55,23 @@
         --input: 217.2 32.6% 17.5%;
         --ring: 212.7 26.8% 83.9%;
       }
+      /* Section headings speak terminal: mono face + blinking block cursor */
+      main section h2 {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+        letter-spacing: -0.03em;
+      }
+      main section h2::after {
+        content: '▊';
+        margin-left: 0.12em;
+        color: #3b82f6;
+        animation: h2-blink 1.2s steps(2, start) infinite;
+      }
+      @keyframes h2-blink {
+        to { visibility: hidden; }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        main section h2::after { animation: none; }
+      }
     </style>
     <script>
       tailwind.config = {

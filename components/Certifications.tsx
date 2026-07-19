@@ -95,7 +95,7 @@ const Certifications: React.FC<CertificationsProps> = ({ data }) => {
     <section className="py-20 md:py-24 bg-transparent relative z-10 pointer-events-auto">
       <div className="container mx-auto px-4">
         <div className="mb-16">
-          <p className="text-sm text-blue-500 font-bold tracking-widest uppercase mb-2">&gt; IDENTITY_VERIFICATION</p>
+          <p className="text-sm text-blue-500 font-mono font-bold mb-2">$ sudo -l --verify</p>
           <h2 className="text-3xl md:text-5xl font-extrabold text-slate-900 dark:text-slate-50 drop-shadow-lg">Access Badges</h2>
           <p className="mt-4 text-lg text-slate-600 dark:text-slate-400">Security clearance modules & recognized certifications.</p>
         </div>

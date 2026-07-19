@@ -3,13 +3,15 @@ import React, { useState, useEffect, useRef } from 'react';
 type Stat = {
   label: string;
   value: number;
+  suffix?: string;
+  decimals?: number;
 };
 
 type StatsProps = {
   data: Stat[];
 };
 
-const CountUp: React.FC<{ end: number }> = ({ end }) => {
+const CountUp: React.FC<{ end: number; decimals?: number }> = ({ end, decimals }) => {
   const [count, setCount] = useState(0);
   const ref = useRef<HTMLSpanElement>(null);
   // Fix: Initialize useRef with a value (null) and update the type to allow null.
@@ -31,7 +33,7 @@ const CountUp: React.FC<{ end: number }> = ({ end }) => {
           const animate = (currentTime: number) => {
             const elapsedTime = currentTime - startTime;
             const progress = Math.min(elapsedTime / duration, 1);
-            setCount(Math.floor(easeOutExpo(progress) * end));
+            setCount(easeOutExpo(progress) * end);
 
             if (progress < 1) {
               animationFrameRef.current = requestAnimationFrame(animate);
@@ -59,7 +61,7 @@ const CountUp: React.FC<{ end: number }> = ({ end }) => {
     };
   }, [end]);
 
-  return <span ref={ref}>{count.toLocaleString()}</span>;
+  return <span ref={ref}>{decimals ? count.toFixed(decimals) : Math.floor(count).toLocaleString()}</span>;
 };
 
 const Stats: React.FC<StatsProps> = ({ data }) => {
@@ -71,7 +73,7 @@ const Stats: React.FC<StatsProps> = ({ data }) => {
           {data.map((stat) => (
             <div key={stat.label} className="flex flex-col items-center">
               <p className="text-4xl md:text-6xl font-bold">
-                <CountUp end={stat.value} />
+                <CountUp end={stat.value} decimals={stat.decimals} />{stat.suffix}
               </p>
               <p className="mt-2 text-md md:text-lg text-slate-300">{stat.label}</p>
             </div>
