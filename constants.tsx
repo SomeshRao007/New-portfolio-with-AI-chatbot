@@ -207,6 +207,30 @@ const STATS_DATA = [
 
 const PROJECTS_DATA: Project[] = [
   {
+    title: 'Rackd',
+    description: 'Offline-first workout tracker built with React, TypeScript and Cloudflare.',
+    imageUrl: '/images/rackd-favicon.svg',
+    githubUrl: 'https://github.com/SomeshRao007/Rackd',
+  },
+  {
+    title: 'NBS OS',
+    description: 'An AI OS agent for model finetuning and desktop automation.',
+    imageUrl: '/images/nbs-os-base.png',
+    githubUrl: 'https://github.com/SomeshRao007/NBS_OS.git',
+  },
+  {
+    title: 'Queue Driven Autoscaling',
+    description: 'KEDA event-driven autoscaling on AWS EKS, dispatching queued jobs with Symfony.',
+    imageUrl: '/images/queue-autoscaling.png',
+    githubUrl: 'https://github.com/SomeshRao007/Queue-Driven-Autoscaling.git',
+  },
+  {
+    title: 'Email Agents',
+    description: 'Agentic email desktop app built with Tauri, React and TypeScript.',
+    imageUrl: '/images/email-message.svg',
+    githubUrl: 'https://github.com/SomeshRao007/email-agents.git',
+  },
+  {
     title: 'Odoo Module Automation Pipeline',
     description: 'Just update your code and with a single git push get your odoo modules with in multiple servers updated',
     imageUrl: '/images/Odoo-Module-Automation.png',
