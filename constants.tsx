@@ -237,10 +237,16 @@ const STATS_DATA = [
     { label: 'Servers Migrated', value: 3000, suffix: '+' },
     { label: 'Build Time Cut', value: 40, suffix: '%' },
     { label: 'Uptime Maintained', value: 99.99, suffix: '%', decimals: 2 },
-    { label: 'Projects Shipped', value: 14 },
+    { label: 'Projects Shipped', value: 15 },
 ];
 
 const PROJECTS_DATA: Project[] = [
+  {
+    title: 'Faciolock',
+    description: 'Infrared face authentication for Linux via PAM, written in Rust with native KDE Plasma integration.',
+    imageUrl: '/images/faciolock.png',
+    githubUrl: 'https://github.com/SomeshRao007/Faciolock.git',
+  },
   {
     title: 'Rackd',
     description: 'Offline-first workout tracker built with React, TypeScript and Cloudflare.',
